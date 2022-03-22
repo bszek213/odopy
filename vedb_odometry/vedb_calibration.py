@@ -138,6 +138,12 @@ class vedbCalibration():
     
     def plot(self, accel, odo):
         pass
+
+    def get_head_orientation(self):
+        return self.head_roll, self.head_pitch
+
+    def get_heading(self):
+        return self.heading_azimuth, self.heading_elevation
         
     def get_accel(self):
         return self.accel

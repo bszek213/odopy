@@ -1,0 +1,13 @@
+name: vedb_odometry #WIP, likely will look close to/exactly the same as the environment.yaml for `vedb_store`.
+channels:
+  - conda-forge
+  - phausamann
+  - vedb
+dependencies:
+  - python
+  - numpy
+  - pandas
+  - xarray
+  - pupil_recording_interface
+  - rigid_body_motion
+  - vedb_store
