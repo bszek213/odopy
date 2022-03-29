@@ -3,6 +3,7 @@ channels:
   - conda-forge
   - phausamann
   - vedb
+  - plotly
 dependencies:
   - python
   - numpy
@@ -11,3 +12,4 @@ dependencies:
   - pupil_recording_interface
   - rigid_body_motion
   - vedb_store
+  - plotly
