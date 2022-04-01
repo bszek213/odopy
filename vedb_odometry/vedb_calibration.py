@@ -89,11 +89,17 @@ class vedbCalibration():
         self.pitch_end = input('Pitch Timestamp End (HH:mm:ss format): ')
         self.yaw_start = input('Yaw Timestamp Start (HH:mm:ss format): ')
         self.yaw_end = input('Yaw Timestamp End (HH:mm:ss format): ')
-        
-    
+
+        self.times = {'calibration': {
+        'pitch_start': self.pitch_start,
+        'pitch_end': self.pitch_end,
+        'yaw_start': self.yaw_start,
+        'yaw_end': self.yaw_end
+        }}
+
     def t265_to_head_trans(self):
 
-        # # Pull annotated calibration segment times from yaml (LEGACY FROM OLD ANALYSIS, NEEDS CHANGED)
+        # Pull annotated calibration segment times from yaml (LEGACY FROM OLD ANALYSIS, NEEDS CHANGED)
         # with open(folder / subject / "meta.yaml") as f:
         #     times = yaml.safe_load(f.read())
 
@@ -112,6 +118,9 @@ class vedbCalibration():
         #                 for k, v in times[annotation][idx].items()
         #             }
 
+        # Extract calibration segment times:
+
+
         # Set-up Reference Frames
         R_WORLD_ODOM = np.array([[0, 0, -1], [-1, 0, 0], [0, 1, 0]])
         R_IMU_ODOM = np.array([[-1, 0, 0], [0, 1, 0], [0, 0, -1]])
@@ -129,8 +138,9 @@ class vedbCalibration():
                                                 ).register(update=True)
 
         # Define first calibrated frame using calibration segments identified in set_calibration method
-        segments = [times["pre_calib"]] + [times["re_calib"]]
-        rotations = np.zeros(len(segments), 4)
+        # segments = [times["pre_calib"]] + [times["re_calib"]]
+        segments = [times["calibration"]]
+        rotations = np.zeros(len(segments), 2) #Original has 4 - yaw, pitch, Reid's, hallway
         timestamps = np.zeros(len(segments), dtype=pd.Timestamp)
 
         for idx, calib_segment in enumerate(segments):
@@ -151,8 +161,45 @@ class vedbCalibration():
             timestamps[idx] = min(calib_segment["pitch_start"], calib_segment["yaw_start"])
 
         # Construct discrete reference frame
+        # Note - may need to change discrete to false, as final version of calibration script this is ported from
+        # incorporates an additional step using Reid's plane, that results in a final continuous calibration frame.
 
-        pass
+        rbm.register_frame(rotations=rotations, timestamps=pd.DatetimeIndex(timestamps), name="t265_calib", 
+                            parent="t265_vestibular", inverse=True, discrete=True, update=True)
+
+        # Express data in calibrated frame (probably can use iteration to make this cleaner)
+
+        self.calib_ang_pos = rbm.transform_vectors(self.odometry.orientation.sel(time=times),
+                                                    outof="t265_world",
+                                                    into="t265_calib")
+        self.calib_lin_pos = rbm.transform_vectors(self.odometry.position.sel(time=times),
+                                                    outof="t265_world",
+                                                    into="t265_calib")
+
+        self.calib_ang_vel = rbm.transform_vectors(self.odometry.angular_velocity.sel(time=times),
+                                                    outof="t265_world",
+                                                    into="t265_calib")
+        self.calib_lin_vel = rbm.transform_vectors(self.odometry.linear_velocity.sel(time=times),
+                                                    outof="t265_world",
+                                                    into="t265_calib")
+
+        self.calib_ang_acc = rbm.transform_vectors(self.accel.angular_accel.sel(time=times),
+                                                    outof="t265_world",
+                                                    into="t265_calib")
+        self.calib_lin_acc = rbm.transform_vectors(self.accel.linear_accel.sel(time=times),
+                                                    outof="t265_world",
+                                                    into="t265_calib")
+
+        # Return data expressed in calibrated frame
+
+        self.calib_odo = xr.Dataset(
+            {"ang_pos": self.calib_ang_pos, 
+            "lin_pos": self.calib_lin_pos,
+            "ang_vel": self.calib_ang_vel.interp(time=calib_ang_accel.time),
+            "lin_vel": self.calib_lin_vel.interp(time=calib_lin_accel.time),
+            "ang_acc": self.calib_ang_acc,
+            "lin_acc": self.calib_lin_acc}
+            )
     
     def calc_gait_variability(self):
         pass
