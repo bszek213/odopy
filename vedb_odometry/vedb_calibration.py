@@ -14,10 +14,11 @@ import rigid_body_motion as rbm
 import vedb_store
 import os
 from scipy.signal import savgol_filter
+from scipy.signal import find_peaks
 # import file_io
-
-# import plotly.express as px
+from datetime import datetime
 import plotly.graph_objects as go
+from time import sleep
 
 #methods should be written from longest to shortest in length
 class vedbCalibration():
@@ -26,6 +27,7 @@ class vedbCalibration():
         self.name = name 
         self.odometry = None
         self.accel = None
+        self.fps = 200 
     
     def set_odometry_folder(self,folder):
         isdir = os.path.isdir(folder) 
@@ -65,18 +67,18 @@ class vedbCalibration():
         
     def start_end_plot(self):
         #smooth data for better viewing purposes
-        pitch = savgol_filter(self.odometry.angular_velocity[:,0], 201, 2)
-        yaw = savgol_filter(self.odometry.angular_velocity[:,1], 201, 2)
+        pitch_vel = savgol_filter(self.odometry.angular_velocity[:,0], 201, 2)
+        yaw_vel = savgol_filter(self.odometry.angular_velocity[:,1], 201, 2)
         
         fig = go.Figure()
         fig.add_trace(go.Scatter(
             x=self.odometry.time.values,
-            y=pitch,
+            y=pitch_vel,
             name="pitch"       # this sets its legend entry
             ))
         fig.add_trace(go.Scatter(
             x=self.odometry.time.values,
-            y=yaw,
+            y=yaw_vel,
             name="yaw"       # this sets its legend entry
             ))
         fig.update_layout(
@@ -85,11 +87,20 @@ class vedbCalibration():
             yaxis_title="Angular Velocity (degress/second)",
             )
         fig.show()
-        self.pitch_start = input('Pitch Timestamp Start (HH:mm:ss format): ')
-        self.pitch_end = input('Pitch Timestamp End (HH:mm:ss format): ')
-        self.yaw_start = input('Yaw Timestamp Start (HH:mm:ss format): ')
-        self.yaw_end = input('Yaw Timestamp End (HH:mm:ss format): ')
-
+        
+        pitch_start = input('Pitch Timestamp Start (HH:mm:ss format): ')
+        pitch_end = input('Pitch Timestamp End (HH:mm:ss format): ')
+        yaw_start = input('Yaw Timestamp Start (HH:mm:ss format): ')
+        yaw_end = input('Yaw Timestamp End (HH:mm:ss format): ')
+        df_time = pd.Series(self.odometry.time[0].values)
+        self.pitch_start = datetime.combine(df_time.dt.date.values[0],
+                                     datetime.strptime(pitch_start, '%H:%M:%S').time())
+        self.pitch_end = datetime.combine(df_time.dt.date.values[0],
+                                     datetime.strptime(pitch_end, '%H:%M:%S').time())
+        self.yaw_start = datetime.combine(df_time.dt.date.values[0],
+                                     datetime.strptime(yaw_start, '%H:%M:%S').time())
+        self.yaw_end = datetime.combine(df_time.dt.date.values[0],
+                                     datetime.strptime(yaw_end, '%H:%M:%S').time())
         self.times = {'calibration': {
         'pitch_start': self.pitch_start,
         'pitch_end': self.pitch_end,
@@ -117,10 +128,7 @@ class vedbCalibration():
         #                 k: pd.to_datetime(times["date"]) + pd.to_timedelta(v)
         #                 for k, v in times[annotation][idx].items()
         #             }
-
         # Extract calibration segment times:
-
-
         # Set-up Reference Frames
         R_WORLD_ODOM = np.array([[0, 0, -1], [-1, 0, 0], [0, 1, 0]])
         R_IMU_ODOM = np.array([[-1, 0, 0], [0, 1, 0], [0, 0, -1]])
@@ -129,18 +137,22 @@ class vedbCalibration():
 
         rbm.ReferenceFrame.from_rotation_matrix(R_WORLD_ODOM, name="t265_world", parent="world").register(update=True)
 
-        rbm.ReferenceFrame.from_dataset(self.odometry, "position", "orientation", "time", parent="t265_world",
-                                        name="t265_odom")
-
+        rbm.register_frame(
+            "t265_odom",
+            translation=self.odometry.position.values,
+            rotation=self.odometry.orientation.values,
+            timestamps=self.odometry.time,
+            parent="t265_world",
+            update=True,
+        )
         rbm.ReferenceFrame.from_rotation_matrix(R_IMU_ODOM, name="t265_imu", parent="t265_odom").register(update=True)
-
         rbm.ReferenceFrame.from_rotation_matrix(R_WORLD_ODOM, name="t265_vestibular", parent="t265_odom", inverse=True
                                                 ).register(update=True)
-
+        print(rbm.render_tree("world"))
         # Define first calibrated frame using calibration segments identified in set_calibration method
         # segments = [times["pre_calib"]] + [times["re_calib"]]
-        segments = [times["calibration"]]
-        rotations = np.zeros(len(segments), 2) #Original has 4 - yaw, pitch, Reid's, hallway
+        segments = [self.times["calibration"]]
+        rotations = np.zeros([len(segments), 4]) #Original has 4 - yaw, pitch, Reid's, hallway
         timestamps = np.zeros(len(segments), dtype=pd.Timestamp)
 
         for idx, calib_segment in enumerate(segments):
@@ -159,34 +171,40 @@ class vedbCalibration():
                                                       xr.concat((omega_pitch_target, omega_yaw_target), "time"))
 
             timestamps[idx] = min(calib_segment["pitch_start"], calib_segment["yaw_start"])
-
+            
+        print(timestamps) #IS THERE A REASON THIS ARRAY IS ONE VALUE?
+        
         # Construct discrete reference frame
         # Note - may need to change discrete to false, as final version of calibration script this is ported from
         # incorporates an additional step using Reid's plane, that results in a final continuous calibration frame.
-
-        rbm.register_frame(rotations=rotations, timestamps=pd.DatetimeIndex(timestamps), name="t265_calib", 
-                            parent="t265_vestibular", inverse=True, discrete=True, update=True)
+        rbm.register_frame(rotation=rotations, 
+                           timestamps=pd.DatetimeIndex(timestamps), 
+                           name="t265_calib", 
+                            parent="t265_vestibular", 
+                            inverse=True, discrete=True, update=True)
 
         # Express data in calibrated frame (probably can use iteration to make this cleaner)
-
-        self.calib_ang_pos = rbm.transform_vectors(self.odometry.orientation.sel(time=times),
+        self.calib_ang_pos = rbm.transform_vectors(self.odometry.orientation.sel(time=self.times),
                                                     outof="t265_world",
                                                     into="t265_calib")
-        self.calib_lin_pos = rbm.transform_vectors(self.odometry.position.sel(time=times),
-                                                    outof="t265_world",
-                                                    into="t265_calib")
-
-        self.calib_ang_vel = rbm.transform_vectors(self.odometry.angular_velocity.sel(time=times),
-                                                    outof="t265_world",
-                                                    into="t265_calib")
-        self.calib_lin_vel = rbm.transform_vectors(self.odometry.linear_velocity.sel(time=times),
+        
+        #getting error here ^ ValueError: cannot use a dict-like object for selection on a dimension that does not have a MultiIndex
+        
+        self.calib_lin_pos = rbm.transform_vectors(self.odometry.position.sel(time=self.times),
                                                     outof="t265_world",
                                                     into="t265_calib")
 
-        self.calib_ang_acc = rbm.transform_vectors(self.accel.angular_accel.sel(time=times),
+        self.calib_ang_vel = rbm.transform_vectors(self.odometry.angular_velocity.sel(time=self.times),
                                                     outof="t265_world",
                                                     into="t265_calib")
-        self.calib_lin_acc = rbm.transform_vectors(self.accel.linear_accel.sel(time=times),
+        self.calib_lin_vel = rbm.transform_vectors(self.odometry.linear_velocity.sel(time=self.times),
+                                                    outof="t265_world",
+                                                    into="t265_calib")
+
+        self.calib_ang_acc = rbm.transform_vectors(self.accel.angular_accel.sel(time=self.times),
+                                                    outof="t265_world",
+                                                    into="t265_calib")
+        self.calib_lin_acc = rbm.transform_vectors(self.accel.linear_accel.sel(time=self.times),
                                                     outof="t265_world",
                                                     into="t265_calib")
 
@@ -195,13 +213,22 @@ class vedbCalibration():
         self.calib_odo = xr.Dataset(
             {"ang_pos": self.calib_ang_pos, 
             "lin_pos": self.calib_lin_pos,
-            "ang_vel": self.calib_ang_vel.interp(time=calib_ang_accel.time),
-            "lin_vel": self.calib_lin_vel.interp(time=calib_lin_accel.time),
+            "ang_vel": self.calib_ang_vel.interp(time=self.calib_ang_accel.time),
+            "lin_vel": self.calib_lin_vel.interp(time=self.calib_lin_accel.time),
             "ang_acc": self.calib_ang_acc,
             "lin_acc": self.calib_lin_acc}
             )
     
     def calc_gait_variability(self):
+        """
+        this article is used as a reference for the gait variability metric:
+        https://jneuroengrehab.biomedcentral.com/track/pdf/10.1186/1743-0003-2-19.pdf
+        """
+        plt.plot(self.odometry.position[:,1])
+        plt.show()
+        # peaks_fast, _= find_peaks(fast[:,1],distance=fps / 3)
+        # for i in range(len(peaks_slow) - 1):
+        #     step_time_slo[i] = (peaks_slow[i+1] - peaks_slow[i]) * (1/fps)
         pass
     
     def calc_inst_force(self):
