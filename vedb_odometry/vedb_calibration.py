@@ -141,7 +141,7 @@ class vedbCalibration():
             "t265_odom",
             translation=self.odometry.position.values,
             rotation=self.odometry.orientation.values,
-            timestamps=self.odometry.time,
+            timestamps=self.odometry.time.values,
             parent="t265_world",
             update=True,
         )
@@ -151,34 +151,53 @@ class vedbCalibration():
         print(rbm.render_tree("world"))
         # Define first calibrated frame using calibration segments identified in set_calibration method
         # segments = [times["pre_calib"]] + [times["re_calib"]]
-        segments = [self.times["calibration"]]
+        segments = self.times["calibration"]
         rotations = np.zeros([len(segments), 4]) #Original has 4 - yaw, pitch, Reid's, hallway
         timestamps = np.zeros(len(segments), dtype=pd.Timestamp)
+        
+        for idx, seg in self.times["calibration"].items():
+            self.times["calibration"][idx] = np.datetime64(seg)
+        omega = rbm.transform_vectors(self.odometry.angular_velocity, outof="t265_world", into="t265_vestibular")
+        omega_pitch = omega.sel(time=slice(self.times["calibration"]["pitch_start"], 
+                                           self.times["calibration"]["pitch_end"]))
+        omega_yaw = omega.sel(time=slice(self.times["calibration"]["yaw_start"], 
+                                         self.times["calibration"]["yaw_end"]))
+        omega_pitch_target = xr.zeros_like(omega_pitch)
+        omega_pitch_target[:, 1] = np.sign(omega_pitch[:, 1]) * omega_pitch.reduce(np.linalg.norm,
+                                                                                   "cartesian_axis")
+        omega_yaw_target = xr.zeros_like(omega_yaw)
+        omega_yaw_target[:, 2] = np.sign(omega_yaw[:, 2]) * omega_yaw.reduce(np.linalg.norm,
+                                                                             "cartesian_axis")
+        rotations= rbm.best_fit_rotation(xr.concat((omega_pitch, omega_yaw), "time"),
+                                                  xr.concat((omega_pitch_target, omega_yaw_target), "time"))
+        timestamps = min(self.times["calibration"]["pitch_start"],
+                              self.times["calibration"]["yaw_start"])
+        argmin_time = min(self.odometry.time.values, key=lambda x: abs(x - timestamps))
+        # for idx, calib_segment in enumerate(self.times["calibration"].items()):
+        #     dt64 = np.datetime64(calib_segment[1])
+        #     omega = rbm.transform_vectors(self.odometry.angular_velocity, outof="t265_world", into="t265_vestibular")
+        #     omega_pitch = omega.sel(time=slice(calib_segment["pitch_start"], calib_segment["pitch_end"]))
+        #     omega_yaw = omega.sel(time=slice(calib_segment["yaw_start"], calib_segment["yaw_end"]))
 
-        for idx, calib_segment in enumerate(segments):
+        #     omega_pitch_target = xr.zeros_like(omega_pitch)
+        #     omega_pitch_target[:, 1] = np.sign(omega_pitch[:, 1]) * omega_pitch.reduce(np.linalg.norm, "cartesian_axis")
 
-            omega = rbm.transform_vectors(self.odometry.angular_velocity, outof="t265_world", into="t265_vestibular")
-            omega_pitch = omega.sel(time=slice(calib_segment["pitch_start"], calib_segment["pitch_end"]))
-            omega_yaw = omega.sel(time=slice(calib_segment["yaw_start"], calib_segment["yaw_end"]))
+        #     omega_yaw_target = xr.zeros_like(omega_yaw)
+        #     omega_yaw_target[:, 2] = np.sign(omega_yaw[:, 2]) * omega_yaw.reduce(np.linalg.norm, "cartesian_axis")
 
-            omega_pitch_target = xr.zeros_like(omega_pitch)
-            omega_pitch_target[:, 1] = np.sign(omega_pitch[:, 1]) * omega_pitch.reduce(np.linalg.norm, "cartesian_axis")
+        #     rotations[idx, :] = rbm.best_fit_rotation(xr.concat((omega_pitch, omega_yaw), "time"),
+        #                                               xr.concat((omega_pitch_target, omega_yaw_target), "time"))
 
-            omega_yaw_target = xr.zeros_like(omega_yaw)
-            omega_yaw_target[:, 2] = np.sign(omega_yaw[:, 2]) * omega_yaw.reduce(np.linalg.norm, "cartesian_axis")
-
-            rotations[idx, :] = rbm.best_fit_rotation(xr.concat((omega_pitch, omega_yaw), "time"),
-                                                      xr.concat((omega_pitch_target, omega_yaw_target), "time"))
-
-            timestamps[idx] = min(calib_segment["pitch_start"], calib_segment["yaw_start"])
+        #     timestamps[idx] = min(calib_segment["pitch_start"], calib_segment["yaw_start"])
             
-        print(timestamps) #IS THERE A REASON THIS ARRAY IS ONE VALUE?
+        print(argmin_time) #IS THERE A REASON THIS ARRAY IS ONE VALUE?
+        print(pd.to_datetime(argmin_time))
         
         # Construct discrete reference frame
         # Note - may need to change discrete to false, as final version of calibration script this is ported from
         # incorporates an additional step using Reid's plane, that results in a final continuous calibration frame.
         rbm.register_frame(rotation=rotations, 
-                           timestamps=pd.DatetimeIndex(timestamps), 
+                           timestamps=argmin_time, #pd.to_datetime(argmin_time)
                            name="t265_calib", 
                             parent="t265_vestibular", 
                             inverse=True, discrete=True, update=True)
