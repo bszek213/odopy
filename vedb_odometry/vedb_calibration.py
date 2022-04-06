@@ -29,7 +29,7 @@ class vedbCalibration():
         self.accel = None
         self.fps = 200 
     
-    def set_odometry_folder(self,folder):
+    def set_odometry_folder(self, folder):
         isdir = os.path.isdir(folder) 
         if isdir == False:
             print('Folder does not exist. Check the path')
@@ -168,11 +168,12 @@ class vedbCalibration():
         omega_yaw_target = xr.zeros_like(omega_yaw)
         omega_yaw_target[:, 2] = np.sign(omega_yaw[:, 2]) * omega_yaw.reduce(np.linalg.norm,
                                                                              "cartesian_axis")
-        rotations= rbm.best_fit_rotation(xr.concat((omega_pitch, omega_yaw), "time"),
+        rotations = rbm.best_fit_rotation(xr.concat((omega_pitch, omega_yaw), "time"),
                                                   xr.concat((omega_pitch_target, omega_yaw_target), "time"))
         timestamps = min(self.times["calibration"]["pitch_start"],
                               self.times["calibration"]["yaw_start"])
         argmin_time = min(self.odometry.time.values, key=lambda x: abs(x - timestamps))
+
         # for idx, calib_segment in enumerate(self.times["calibration"].items()):
         #     dt64 = np.datetime64(calib_segment[1])
         #     omega = rbm.transform_vectors(self.odometry.angular_velocity, outof="t265_world", into="t265_vestibular")
@@ -190,28 +191,40 @@ class vedbCalibration():
 
         #     timestamps[idx] = min(calib_segment["pitch_start"], calib_segment["yaw_start"])
             
-        print(argmin_time) #IS THERE A REASON THIS ARRAY IS ONE VALUE?
-        print(pd.to_datetime(argmin_time))
-        
+        # print(argmin_time) #IS THERE A REASON THIS ARRAY IS ONE VALUE?
+        # print(pd.to_datetime(argmin_time))
+        # print(np.array([argmin_time]))
+        # print(np.array([pd.to_datetime(argmin_time)]))
+
         # Construct discrete reference frame
         # Note - may need to change discrete to false, as final version of calibration script this is ported from
         # incorporates an additional step using Reid's plane, that results in a final continuous calibration frame.
-        rbm.register_frame(rotation=rotations, 
-                           timestamps=argmin_time, #pd.to_datetime(argmin_time)
+
+        rbm.register_frame(rotation=np.array([rotations]), #Hacky but passes, otherwise get ValueError: Expected rotation to be of shape (1, 4), got (4,)
+                           timestamps=np.array([pd.to_datetime(argmin_time)]), #pd.to_datetime(argmin_time)
                            name="t265_calib", 
                             parent="t265_vestibular", 
-                            inverse=True, discrete=True, update=True)
+                            inverse=True, discrete=False, update=True)
+
+        # print(self.odometry.orientation)
+        # print(self.times)
+
+        record_time = slice(self.odometry.orientation.time[0].values, self.odometry.orientation.time[-1].values) #Just selecting entire recording for now
+        print(record_time)
 
         # Express data in calibrated frame (probably can use iteration to make this cleaner)
-        self.calib_ang_pos = rbm.transform_vectors(self.odometry.orientation.sel(time=self.times),
+        # self.calib_ang_pos = rbm.transform_vectors(self.odometry.orientation.sel(time=record_time),
+        #                                             outof="t265_world",
+        #                                             into="t265_calib")
+        
+        #Get ValueError on into="t265_calib": Expected array to have length 3 along axis -1, got 4
+        #May be related to orientation being quarternion axes?
+        
+        self.calib_lin_pos = rbm.transform_vectors(self.odometry.position.sel(time=record_time),
                                                     outof="t265_world",
                                                     into="t265_calib")
-        
-        #getting error here ^ ValueError: cannot use a dict-like object for selection on a dimension that does not have a MultiIndex
-        
-        self.calib_lin_pos = rbm.transform_vectors(self.odometry.position.sel(time=self.times),
-                                                    outof="t265_world",
-                                                    into="t265_calib")
+
+        #Get TypeError on into="t265_calib": float() argument must be a string or a number, not 'TimeStamp'
 
         self.calib_ang_vel = rbm.transform_vectors(self.odometry.angular_velocity.sel(time=self.times),
                                                     outof="t265_world",
