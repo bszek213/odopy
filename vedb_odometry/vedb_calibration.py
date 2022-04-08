@@ -67,8 +67,8 @@ class vedbCalibration():
         
     def start_end_plot(self):
         #smooth data for better viewing purposes
-        pitch_vel = savgol_filter(self.odometry.angular_velocity[:,0], 201, 2)
-        yaw_vel = savgol_filter(self.odometry.angular_velocity[:,1], 201, 2)
+        pitch_vel = savgol_filter(self.odometry.angular_velocity[:, 0], 201, 2)
+        yaw_vel = savgol_filter(self.odometry.angular_velocity[:, 1], 201, 2)
         
         fig = go.Figure()
         fig.add_trace(go.Scatter(
@@ -84,7 +84,7 @@ class vedbCalibration():
         fig.update_layout(
             title="Angular velocity odometry",
             xaxis_title="Time stamps (datetime)",
-            yaxis_title="Angular Velocity (degress/second)",
+            yaxis_title="Angular Velocity (degrees/second)",
             )
         fig.show()
         
@@ -101,12 +101,12 @@ class vedbCalibration():
                                      datetime.strptime(yaw_start, '%H:%M:%S').time())
         self.yaw_end = datetime.combine(df_time.dt.date.values[0],
                                      datetime.strptime(yaw_end, '%H:%M:%S').time())
-        self.times = {'calibration': {
-        'pitch_start': self.pitch_start,
-        'pitch_end': self.pitch_end,
-        'yaw_start': self.yaw_start,
-        'yaw_end': self.yaw_end
-        }}
+        self.times = {'calibration':
+            {'pitch_start': self.pitch_start,
+             'pitch_end': self.pitch_end,
+             'yaw_start': self.yaw_start,
+             'yaw_end': self.yaw_end
+             }}
 
     def t265_to_head_trans(self):
 
@@ -162,6 +162,7 @@ class vedbCalibration():
                                            self.times["calibration"]["pitch_end"]))
         omega_yaw = omega.sel(time=slice(self.times["calibration"]["yaw_start"], 
                                          self.times["calibration"]["yaw_end"]))
+
         omega_pitch_target = xr.zeros_like(omega_pitch)
         omega_pitch_target[:, 1] = np.sign(omega_pitch[:, 1]) * omega_pitch.reduce(np.linalg.norm,
                                                                                    "cartesian_axis")
@@ -170,8 +171,10 @@ class vedbCalibration():
                                                                              "cartesian_axis")
         rotations = rbm.best_fit_rotation(xr.concat((omega_pitch, omega_yaw), "time"),
                                                   xr.concat((omega_pitch_target, omega_yaw_target), "time"))
+
         timestamps = min(self.times["calibration"]["pitch_start"],
                               self.times["calibration"]["yaw_start"])
+
         argmin_time = min(self.odometry.time.values, key=lambda x: abs(x - timestamps))
 
         # for idx, calib_segment in enumerate(self.times["calibration"].items()):
@@ -200,53 +203,59 @@ class vedbCalibration():
         # Note - may need to change discrete to false, as final version of calibration script this is ported from
         # incorporates an additional step using Reid's plane, that results in a final continuous calibration frame.
 
-        rbm.register_frame(rotation=np.array([rotations]), #Hacky but passes, otherwise get ValueError: Expected rotation to be of shape (1, 4), got (4,)
-                           timestamps=np.array([pd.to_datetime(argmin_time)]), #pd.to_datetime(argmin_time)
-                           name="t265_calib", 
-                            parent="t265_vestibular", 
-                            inverse=True, discrete=False, update=True)
+        # rbm.register_frame(rotation=np.array([rotations]), #Hacky but passes, otherwise get ValueError: Expected rotation to be of shape (1, 4), got (4,)
+        #                    # timestamps=xr.DataArray(argmin_time),
+        #                    # timestamps=np.array([pd.to_datetime(argmin_time)]), #pd.to_datetime(argmin_time)
+        #                    name="t265_calib", parent="t265_vestibular", inverse=True, discrete=False, update=True)
 
-        # print(self.odometry.orientation)
-        # print(self.times)
+        rbm.register_frame(rotation=rotations,
+                           name="t265_calib", parent="t265_vestibular", inverse=True, discrete=False, update=True)
 
-        record_time = slice(self.odometry.orientation.time[0].values, self.odometry.orientation.time[-1].values) #Just selecting entire recording for now
-        print(record_time)
+        record_time = slice(str(self.odometry.orientation.time[0].values), str(self.odometry.orientation.time[-1].values)) #Just selecting entire recording for now, but need it as a slice object
+
+        print(self.odometry)
 
         # Express data in calibrated frame (probably can use iteration to make this cleaner)
-        # self.calib_ang_pos = rbm.transform_vectors(self.odometry.orientation.sel(time=record_time),
-        #                                             outof="t265_world",
-        #                                             into="t265_calib")
+        self.calib_ang_pos = rbm.transform_quaternions(self.odometry.orientation.sel(time=record_time),
+                                                       outof="t265_world",
+                                                       into="t265_calib")
         
-        #Get ValueError on into="t265_calib": Expected array to have length 3 along axis -1, got 4
-        #May be related to orientation being quarternion axes?
-        
-        self.calib_lin_pos = rbm.transform_vectors(self.odometry.position.sel(time=record_time),
+        self.calib_lin_pos = rbm.transform_points(self.odometry.position.sel(time=record_time),
                                                     outof="t265_world",
                                                     into="t265_calib")
 
         #Get TypeError on into="t265_calib": float() argument must be a string or a number, not 'TimeStamp'
 
-        self.calib_ang_vel = rbm.transform_vectors(self.odometry.angular_velocity.sel(time=self.times),
-                                                    outof="t265_world",
-                                                    into="t265_calib")
-        self.calib_lin_vel = rbm.transform_vectors(self.odometry.linear_velocity.sel(time=self.times),
+        self.calib_ang_vel = rbm.transform_vectors(self.odometry.angular_velocity.sel(time=record_time),
                                                     outof="t265_world",
                                                     into="t265_calib")
 
-        self.calib_ang_acc = rbm.transform_vectors(self.accel.angular_accel.sel(time=self.times),
+        self.calib_lin_vel = rbm.transform_vectors(self.odometry.linear_velocity.sel(time=record_time),
                                                     outof="t265_world",
                                                     into="t265_calib")
-        self.calib_lin_acc = rbm.transform_vectors(self.accel.linear_accel.sel(time=self.times),
+
+        self.calib_ang_acc = rbm.transform_vectors(self.odometry.angular_acceleration.sel(time=record_time),
                                                     outof="t265_world",
                                                     into="t265_calib")
+
+        self.calib_lin_acc = rbm.transform_vectors(self.odometry.linear_acceleration.sel(time=record_time), #Could use accelerometer measurement here as well, to decide later
+                                                    outof="t265_world",
+                                                    into="t265_calib")
+
+        print(self.calib_ang_pos)
+        print(self.calib_lin_pos)
+        print(self.calib_ang_vel)
+        print(self.calib_lin_vel)
+        print(self.calib_ang_acc)
+        print(self.calib_lin_acc)
 
         # Return data expressed in calibrated frame
 
         self.calib_odo = xr.Dataset(
             {"ang_pos": self.calib_ang_pos, 
             "lin_pos": self.calib_lin_pos,
-            "ang_vel": self.calib_ang_vel.interp(time=self.calib_ang_accel.time),
-            "lin_vel": self.calib_lin_vel.interp(time=self.calib_lin_accel.time),
+            "ang_vel": self.calib_ang_vel,
+            "lin_vel": self.calib_lin_vel,
             "ang_acc": self.calib_ang_acc,
             "lin_acc": self.calib_lin_acc}
             )
