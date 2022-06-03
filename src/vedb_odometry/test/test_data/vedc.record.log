@@ -1,0 +1,196 @@
+2022-05-31 13:09:01,375 | ved_capture.utils | INFO: Using 'indoor' profile
+2022-05-31 13:09:01,379 | ved_capture.config | DEBUG: Adding video stream 'world' with config: {'device_uid': '20142025', 'device_type': 'flir', 'resolution': (2048, 1536), 'fps': 30, 'color_format': 'bayer_rggb8', 'settings': OrderedDict([('ExposureAuto', 'Continuous'), ('GainAuto', 'Continuous')]), 'pipeline': [<pupil_recording_interface.base.VideoRecorderConfig object at 0x7f396b14f4a8>, <pupil_recording_interface.base.VideoDisplayConfig object at 0x7f396b14f0b8>]}
+2022-05-31 13:09:01,380 | ved_capture.config | DEBUG: Adding video stream 'eye0' with config: {'controls': OrderedDict([('Backlight Compensation', 1), ('Brightness', 0), ('Contrast', 65), ('Gain', 0), ('Hue', 0), ('Saturation', 0), ('Sharpness', 3), ('Gamma', 180), ('White Balance temperature', 4600)]), 'device_type': 'uvc', 'device_uid': 'Pupil Cam2 ID0', 'resolution': (400, 400), 'fps': 120, 'color_format': 'gray', 'exposure_mode': 'auto', 'pipeline': [<pupil_recording_interface.base.VideoRecorderConfig object at 0x7f396b14f978>, <pupil_recording_interface.base.VideoDisplayConfig object at 0x7f396b14f278>]}
+2022-05-31 13:09:01,381 | ved_capture.config | DEBUG: Adding video stream 'eye1' with config: {'controls': OrderedDict([('Backlight Compensation', 1), ('Brightness', 0), ('Contrast', 65), ('Gain', 0), ('Hue', 0), ('Saturation', 0), ('Sharpness', 3), ('Gamma', 180), ('White Balance temperature', 4600)]), 'device_type': 'uvc', 'device_uid': 'Pupil Cam2 ID1', 'resolution': (400, 400), 'fps': 120, 'color_format': 'gray', 'exposure_mode': 'auto', 'pipeline': [<pupil_recording_interface.base.VideoRecorderConfig object at 0x7f396b14f400>, <pupil_recording_interface.base.VideoDisplayConfig object at 0x7f396b14f630>]}
+2022-05-31 13:09:01,381 | ved_capture.config | DEBUG: Adding video stream 't265' with config: {'device_uid': '948422111096', 'device_type': 't265', 'resolution': (1696, 800), 'fps': 30, 'color_format': 'gray', 'pipeline': [<pupil_recording_interface.base.VideoRecorderConfig object at 0x7f396b14f4e0>, <pupil_recording_interface.base.VideoDisplayConfig object at 0x7f396b14f710>]}
+2022-05-31 13:09:01,382 | ved_capture.config | DEBUG: Adding motion stream 'odometry' with config: {'device_uid': '948422111096', 'device_type': 't265', 'motion_type': 'odometry', 'pipeline': [<pupil_recording_interface.base.MotionRecorderConfig object at 0x7f396b14f780>]}
+2022-05-31 13:09:01,382 | ved_capture.config | DEBUG: Adding motion stream 'accel' with config: {'device_uid': '948422111096', 'device_type': 't265', 'motion_type': 'accel', 'pipeline': [<pupil_recording_interface.base.MotionRecorderConfig object at 0x7f396b14f320>]}
+2022-05-31 13:09:01,383 | ved_capture.config | DEBUG: Adding motion stream 'gyro' with config: {'device_uid': '948422111096', 'device_type': 't265', 'motion_type': 'gyro', 'pipeline': [<pupil_recording_interface.base.MotionRecorderConfig object at 0x7f396b14f0f0>]}
+2022-05-31 13:09:01,403 | pupil_recording_interface.process | DEBUG: Initialized process world.VideoRecorder
+2022-05-31 13:09:01,403 | pupil_recording_interface.process | DEBUG: Initialized process world.VideoDisplay
+2022-05-31 13:09:01,403 | pupil_recording_interface.device.video | DEBUG: Software auto-exposure activated.
+2022-05-31 13:09:01,404 | pupil_recording_interface.process | DEBUG: Initialized process eye0.VideoRecorder
+2022-05-31 13:09:01,404 | pupil_recording_interface.process | DEBUG: Initialized process eye0.VideoDisplay
+2022-05-31 13:09:01,404 | pupil_recording_interface.device.video | DEBUG: Software auto-exposure activated.
+2022-05-31 13:09:01,404 | pupil_recording_interface.process | DEBUG: Initialized process eye1.VideoRecorder
+2022-05-31 13:09:01,405 | pupil_recording_interface.process | DEBUG: Initialized process eye1.VideoDisplay
+2022-05-31 13:09:01,405 | pupil_recording_interface.device.realsense | DEBUG: Creating T265 device with serial number 948422111096 and parameters: {'resolution': (1696, 800), 'fps': 30, 'video': 'both', 'odometry': True, 'accel': True, 'gyro': True, 'queue_size': 1}
+2022-05-31 13:09:01,405 | pupil_recording_interface.process | DEBUG: Initialized process t265.VideoRecorder
+2022-05-31 13:09:01,405 | pupil_recording_interface.process | DEBUG: Initialized process t265.VideoDisplay
+2022-05-31 13:09:01,406 | pupil_recording_interface.process | DEBUG: Initialized process odometry.MotionRecorder
+2022-05-31 13:09:01,406 | pupil_recording_interface.process | DEBUG: Initialized process accel.MotionRecorder
+2022-05-31 13:09:01,406 | pupil_recording_interface.process | DEBUG: Initialized process gyro.MotionRecorder
+2022-05-31 13:09:01,439 | ved_capture.config | DEBUG: Saved config.yaml to /home/bcvl/recordings/2022_05_31_13_09_01
+2022-05-31 13:09:01,439 | ved_capture.config | DEBUG: Saved user_info.csv to /home/bcvl/recordings/2022_05_31_13_09_01
+2022-05-31 13:09:01,439 | ved_capture.utils | DEBUG: Copied /home/bcvl/pupil_capture_settings/20142025.intrinsics to /home/bcvl/recordings/2022_05_31_13_09_01/world.intrinsics
+2022-05-31 13:09:01,441 | ved_capture.utils | DEBUG: Copied /home/bcvl/pupil_capture_settings/20142025.extrinsics to /home/bcvl/recordings/2022_05_31_13_09_01/world.extrinsics
+2022-05-31 13:09:01,442 | ved_capture.utils | DEBUG: Copied /home/bcvl/pupil_capture_settings/948422111096_right.extrinsics to /home/bcvl/recordings/2022_05_31_13_09_01/t265_right.extrinsics
+2022-05-31 13:09:01,442 | ved_capture.utils | DEBUG: Copied /home/bcvl/pupil_capture_settings/948422111096_left.extrinsics to /home/bcvl/recordings/2022_05_31_13_09_01/t265_left.extrinsics
+2022-05-31 13:09:04,614 | pupil_recording_interface.device.realsense | DEBUG: T265 pipeline started with video=both, odometry=True, accel=True, gyro=True
+2022-05-31 13:09:05,131 | pupil_recording_interface.manager | DEBUG: Starting process: world
+2022-05-31 13:09:05,135 | pupil_recording_interface.manager | DEBUG: Starting process: eye0
+2022-05-31 13:09:05,139 | pupil_recording_interface.manager | DEBUG: Starting process: eye1
+2022-05-31 13:09:05,144 | pupil_recording_interface.manager | DEBUG: Starting process: t265
+2022-05-31 13:09:05,147 | pupil_recording_interface.stream | DEBUG: Starting stream: world
+2022-05-31 13:09:05,151 | pupil_recording_interface.manager | DEBUG: Starting process: odometry
+2022-05-31 13:09:05,157 | pupil_recording_interface.manager | DEBUG: Starting process: accel
+2022-05-31 13:09:05,164 | pupil_recording_interface.manager | DEBUG: Starting process: gyro
+2022-05-31 13:09:05,167 | pupil_recording_interface.stream | DEBUG: Starting stream: t265
+2022-05-31 13:09:05,168 | pupil_recording_interface.pipeline | DEBUG: Starting pipeline with steps: [<pupil_recording_interface.process.recorder.VideoRecorder object at 0x7f396b15a128>, <pupil_recording_interface.process.display.VideoDisplay object at 0x7f396b15a400>]
+2022-05-31 13:09:05,168 | pupil_recording_interface.encoder | DEBUG: ffmpeg called with arguments: -hide_banner -loglevel error -an -r 30.0 -f rawvideo -s 1696x800 -pix_fmt gray -i pipe: -preset ultrafast -crf 18 -c:v libx264 /home/bcvl/recordings/2022_05_31_13_09_01/t265.mp4
+2022-05-31 13:09:05,168 | pupil_recording_interface.stream | DEBUG: Starting stream: odometry
+2022-05-31 13:09:05,169 | pupil_recording_interface.pipeline | DEBUG: Starting pipeline with steps: [<pupil_recording_interface.process.recorder.MotionRecorder object at 0x7f396b15a4a8>]
+2022-05-31 13:09:05,169 | pupil_recording_interface.process | DEBUG: Started motion recorder, recording to /home/bcvl/recordings/2022_05_31_13_09_01/odometry.pldata
+2022-05-31 13:09:05,169 | pupil_recording_interface.utils | DEBUG: Process ID for stream odometry: 40301
+2022-05-31 13:09:05,171 | pupil_recording_interface.manager | DEBUG: Recording folder: /home/bcvl/recordings/2022_05_31_13_09_01
+2022-05-31 13:09:05,171 | pupil_recording_interface.manager | DEBUG: Run start time: 1654016945.171377
+2022-05-31 13:09:05,171 | pupil_recording_interface.manager | DEBUG: Run start time monotonic: 1056214.243659183
+2022-05-31 13:09:05,173 | pupil_recording_interface.utils | DEBUG: Process ID for manager ved-capture: 39832
+2022-05-31 13:09:05,178 | pupil_recording_interface.stream | DEBUG: Starting stream: accel
+2022-05-31 13:09:05,178 | pupil_recording_interface.pipeline | DEBUG: Starting pipeline with steps: [<pupil_recording_interface.process.recorder.MotionRecorder object at 0x7f396b15ac50>]
+2022-05-31 13:09:05,178 | pupil_recording_interface.process | DEBUG: Started motion recorder, recording to /home/bcvl/recordings/2022_05_31_13_09_01/accel.pldata
+2022-05-31 13:09:05,178 | pupil_recording_interface.utils | DEBUG: Process ID for stream accel: 40330
+2022-05-31 13:09:05,179 | pupil_recording_interface.utils | DEBUG: Process ID for stream t265: 40286
+2022-05-31 13:09:05,187 | pupil_recording_interface.stream | DEBUG: Starting stream: gyro
+2022-05-31 13:09:05,187 | pupil_recording_interface.pipeline | DEBUG: Starting pipeline with steps: [<pupil_recording_interface.process.recorder.MotionRecorder object at 0x7f396b15afd0>]
+2022-05-31 13:09:05,187 | pupil_recording_interface.process | DEBUG: Started motion recorder, recording to /home/bcvl/recordings/2022_05_31_13_09_01/gyro.pldata
+2022-05-31 13:09:05,187 | pupil_recording_interface.utils | DEBUG: Process ID for stream gyro: 40359
+2022-05-31 13:09:05,348 | vedc.record | DEBUG: Initial connect registered by UI.
+2022-05-31 13:09:05,348 | vedc.record | DEBUG: Initial connect registered by UI.
+2022-05-31 13:09:05,348 | vedc.record | DEBUG: Initial connect registered by UI.
+2022-05-31 13:09:05,348 | vedc.record | DEBUG: Initial connect registered by UI.
+2022-05-31 13:09:05,149 | pupil_recording_interface.stream | DEBUG: Starting stream: eye0
+2022-05-31 13:09:05,156 | pupil_recording_interface.stream | DEBUG: Starting stream: eye1
+2022-05-31 13:09:06,039 | uvc | DEBUG: Found device that mached uid:'1:35'
+2022-05-31 13:09:06,040 | uvc | DEBUG: Found device that mached uid:'1:36'
+2022-05-31 13:09:06,046 | uvc | DEBUG: Device '1:35' opended.
+2022-05-31 13:09:06,047 | uvc | DEBUG: Device '1:36' opended.
+2022-05-31 13:09:06,046 | uvc | DEBUG: avaible video modes: [{'size': (400, 400), 'rates': [120, 90, 60, 30]}, {'size': (192, 192), 'rates': [200, 180, 120, 90, 60, 30]}]
+2022-05-31 13:09:06,047 | uvc | DEBUG: avaible video modes: [{'size': (400, 400), 'rates': [120, 90, 60, 30]}, {'size': (192, 192), 'rates': [200, 180, 120, 90, 60, 30]}]
+2022-05-31 13:09:06,047 | uvc | DEBUG: Adding "Auto Exposure Mode" control.
+2022-05-31 13:09:06,047 | uvc | DEBUG: Adding "Auto Exposure Mode" control.
+2022-05-31 13:09:06,048 | uvc | DEBUG: Adding "Auto Exposure Priority" control.
+2022-05-31 13:09:06,049 | uvc | DEBUG: Adding "Auto Exposure Priority" control.
+2022-05-31 13:09:06,050 | uvc | DEBUG: Adding "Absolute Exposure Time" control.
+2022-05-31 13:09:06,053 | uvc | DEBUG: Adding "Auto Focus" control.
+2022-05-31 13:09:06,055 | uvc | DEBUG: Adding "Absolute Focus" control.
+2022-05-31 13:09:06,058 | uvc | DEBUG: Adding "Absolute Iris " control.
+2022-05-31 13:09:06,061 | uvc | DEBUG: Adding "Scanning Mode " control.
+2022-05-31 13:09:06,062 | uvc | DEBUG: Adding "Zoom absolute control" control.
+2022-05-31 13:09:06,066 | uvc | DEBUG: Adding "Pan control" control.
+2022-05-31 13:09:06,070 | uvc | DEBUG: Adding "Tilt control" control.
+2022-05-31 13:09:06,074 | uvc | DEBUG: Adding "Roll absolute control" control.
+2022-05-31 13:09:06,077 | uvc | DEBUG: Adding "Privacy Shutter control" control.
+2022-05-31 13:09:06,078 | uvc | DEBUG: Adding "Backlight Compensation" control.
+2022-05-31 13:09:06,081 | uvc | DEBUG: Adding "Brightness" control.
+2022-05-31 13:09:06,085 | uvc | DEBUG: Adding "Contrast" control.
+2022-05-31 13:09:06,088 | uvc | DEBUG: Adding "Gain" control.
+2022-05-31 13:09:06,091 | uvc | DEBUG: Adding "Power Line frequency" control.
+2022-05-31 13:09:06,093 | uvc | DEBUG: Adding "Hue" control.
+2022-05-31 13:09:06,096 | uvc | DEBUG: Adding "Saturation" control.
+2022-05-31 13:09:06,099 | uvc | DEBUG: Adding "Sharpness" control.
+2022-05-31 13:09:06,103 | uvc | DEBUG: Adding "Gamma" control.
+2022-05-31 13:09:06,106 | uvc | DEBUG: Adding "White Balance temperature" control.
+2022-05-31 13:09:06,109 | uvc | DEBUG: Adding "White Balance temperature,Auto" control.
+2022-05-31 13:09:06,111 | uvc | DEBUG: Setting mode: 400,400,120
+2022-05-31 13:09:06,166 | pupil_recording_interface.pipeline | DEBUG: Starting pipeline with steps: [<pupil_recording_interface.process.recorder.VideoRecorder object at 0x7f396b155ba8>, <pupil_recording_interface.process.display.VideoDisplay object at 0x7f396b155320>]
+2022-05-31 13:09:06,166 | pupil_recording_interface.encoder | DEBUG: ffmpeg called with arguments: -hide_banner -loglevel error -an -r 120.0 -f rawvideo -s 400x400 -pix_fmt gray -i pipe: -preset ultrafast -crf 18 -c:v libx264 /home/bcvl/recordings/2022_05_31_13_09_01/eye1.mp4
+2022-05-31 13:09:06,049 | uvc | DEBUG: Adding "Absolute Exposure Time" control.
+2022-05-31 13:09:06,052 | uvc | DEBUG: Adding "Auto Focus" control.
+2022-05-31 13:09:06,054 | uvc | DEBUG: Adding "Absolute Focus" control.
+2022-05-31 13:09:06,057 | uvc | DEBUG: Adding "Absolute Iris " control.
+2022-05-31 13:09:06,060 | uvc | DEBUG: Adding "Scanning Mode " control.
+2022-05-31 13:09:06,062 | uvc | DEBUG: Adding "Zoom absolute control" control.
+2022-05-31 13:09:06,065 | uvc | DEBUG: Adding "Pan control" control.
+2022-05-31 13:09:06,069 | uvc | DEBUG: Adding "Tilt control" control.
+2022-05-31 13:09:06,072 | uvc | DEBUG: Adding "Roll absolute control" control.
+2022-05-31 13:09:06,076 | uvc | DEBUG: Adding "Privacy Shutter control" control.
+2022-05-31 13:09:06,077 | uvc | DEBUG: Adding "Backlight Compensation" control.
+2022-05-31 13:09:06,080 | uvc | DEBUG: Adding "Brightness" control.
+2022-05-31 13:09:06,084 | uvc | DEBUG: Adding "Contrast" control.
+2022-05-31 13:09:06,087 | uvc | DEBUG: Adding "Gain" control.
+2022-05-31 13:09:06,090 | uvc | DEBUG: Adding "Power Line frequency" control.
+2022-05-31 13:09:06,092 | uvc | DEBUG: Adding "Hue" control.
+2022-05-31 13:09:06,095 | uvc | DEBUG: Adding "Saturation" control.
+2022-05-31 13:09:06,098 | uvc | DEBUG: Adding "Sharpness" control.
+2022-05-31 13:09:06,101 | uvc | DEBUG: Adding "Gamma" control.
+2022-05-31 13:09:06,104 | uvc | DEBUG: Adding "White Balance temperature" control.
+2022-05-31 13:09:06,108 | uvc | DEBUG: Adding "White Balance temperature,Auto" control.
+2022-05-31 13:09:06,110 | uvc | DEBUG: Setting mode: 400,400,120
+2022-05-31 13:09:06,168 | pupil_recording_interface.pipeline | DEBUG: Starting pipeline with steps: [<pupil_recording_interface.process.recorder.VideoRecorder object at 0x7f396b155128>, <pupil_recording_interface.process.display.VideoDisplay object at 0x7f396b155748>]
+2022-05-31 13:09:06,168 | pupil_recording_interface.encoder | DEBUG: ffmpeg called with arguments: -hide_banner -loglevel error -an -r 120.0 -f rawvideo -s 400x400 -pix_fmt gray -i pipe: -preset ultrafast -crf 18 -c:v libx264 /home/bcvl/recordings/2022_05_31_13_09_01/eye0.mp4
+2022-05-31 13:09:06,181 | pupil_recording_interface.utils | DEBUG: Process ID for stream eye1: 40251
+2022-05-31 13:09:06,183 | pupil_recording_interface.utils | DEBUG: Process ID for stream eye0: 40231
+2022-05-31 13:09:06,247 | uvc | DEBUG: Stream start.
+2022-05-31 13:09:06,297 | uvc | DEBUG: Stream start.
+2022-05-31 13:09:06,374 | vedc.record | DEBUG: Initial connect registered by UI.
+2022-05-31 13:09:06,374 | vedc.record | DEBUG: Initial connect registered by UI.
+2022-05-31 13:09:07,867 | pupil_recording_interface.device.flir | DEBUG: FLIR camera type: Chameleon
+2022-05-31 13:09:07,867 | pupil_recording_interface.device.flir | DEBUG: DeviceID: 013357C9
+2022-05-31 13:09:07,867 | pupil_recording_interface.device.flir | DEBUG: DeviceSerialNumber: 20142025
+2022-05-31 13:09:07,867 | pupil_recording_interface.device.flir | DEBUG: DeviceVendorName: Point Grey Research
+2022-05-31 13:09:07,868 | pupil_recording_interface.device.flir | DEBUG: DeviceModelName: Chameleon3 CM3-U3-31S4C
+2022-05-31 13:09:07,868 | pupil_recording_interface.device.flir | DEBUG: DeviceType: USB3Vision
+2022-05-31 13:09:07,868 | pupil_recording_interface.device.flir | DEBUG: DeviceDisplayName: Point Grey Research
+2022-05-31 13:09:07,868 | pupil_recording_interface.device.flir | DEBUG: DeviceAccessStatus: OpenReadWrite
+2022-05-31 13:09:07,868 | pupil_recording_interface.device.flir | DEBUG: DeviceVersion: FW:v1.12.3.00 FPGA:v2.02
+2022-05-31 13:09:07,868 | pupil_recording_interface.device.flir | DEBUG: DeviceDriverVersion: none : 0.0.0.0
+2022-05-31 13:09:07,869 | pupil_recording_interface.device.flir | DEBUG: DeviceUserID: 
+2022-05-31 13:09:07,869 | pupil_recording_interface.device.flir | DEBUG: DeviceIsUpdater: 0
+2022-05-31 13:09:07,869 | pupil_recording_interface.device.flir | DEBUG: DeviceInstanceId: 013357C9
+2022-05-31 13:09:07,869 | pupil_recording_interface.device.flir | DEBUG: DeviceLocation: 
+2022-05-31 13:09:07,869 | pupil_recording_interface.device.flir | DEBUG: DeviceCurrentSpeed: SuperSpeed
+2022-05-31 13:09:07,870 | pupil_recording_interface.device.flir | DEBUG: GUIXMLLocation: Device
+2022-05-31 13:09:07,870 | pupil_recording_interface.device.flir | DEBUG: GUIXMLPath: Input.xml
+2022-05-31 13:09:07,870 | pupil_recording_interface.device.flir | DEBUG: GenICamXMLLocation: Device
+2022-05-31 13:09:07,870 | pupil_recording_interface.device.flir | DEBUG: GenICamXMLPath: 
+2022-05-31 13:09:07,870 | pupil_recording_interface.device.flir | DEBUG: DeviceU3VProtocol: 1
+2022-05-31 13:09:07,871 | pupil_recording_interface.device.flir | DEBUG: Setting Chameleon:AcquisitionFrameRate to 30
+2022-05-31 13:09:07,873 | pupil_recording_interface.device.flir | DEBUG: Setting Chameleon:ExposureAuto to Continuous
+2022-05-31 13:09:07,874 | pupil_recording_interface.device.flir | DEBUG: Setting Chameleon:GainAuto to Continuous
+2022-05-31 13:09:07,875 | pupil_recording_interface.device.flir | DEBUG: Measuring timestamp offset ...
+2022-05-31 13:09:07,880 | pupil_recording_interface.device.flir | DEBUG: Timestamp offset: 1.6540167050082297
+2022-05-31 13:09:07,890 | pupil_recording_interface.device.flir | DEBUG: Acquisition started
+2022-05-31 13:09:07,890 | pupil_recording_interface.pipeline | DEBUG: Starting pipeline with steps: [<pupil_recording_interface.process.recorder.VideoRecorder object at 0x7f396b14ff28>, <pupil_recording_interface.process.display.VideoDisplay object at 0x7f396b14fb38>]
+2022-05-31 13:09:07,891 | pupil_recording_interface.encoder | DEBUG: ffmpeg called with arguments: -hide_banner -loglevel error -an -r 30.0 -f rawvideo -s 2048x1536 -pix_fmt bayer_rggb8 -i pipe: -preset ultrafast -crf 18 -c:v libx264 /home/bcvl/recordings/2022_05_31_13_09_01/world.mp4
+2022-05-31 13:09:07,900 | pupil_recording_interface.utils | DEBUG: Process ID for stream world: 40225
+2022-05-31 13:09:07,966 | vedc.record | DEBUG: Initial connect registered by UI.
+2022-05-31 13:24:51,607 | vedc.record | INFO: Stopping...
+2022-05-31 13:24:51,609 | pupil_recording_interface.manager | DEBUG: Stopping process: world
+2022-05-31 13:24:51,609 | pupil_recording_interface.stream | DEBUG: Thread stopped via stop event.
+2022-05-31 13:24:51,611 | pupil_recording_interface.stream | DEBUG: Thread stopped via stop event.
+2022-05-31 13:24:51,612 | pupil_recording_interface.manager | DEBUG: Stopped spinning
+2022-05-31 13:24:51,616 | pupil_recording_interface.stream | DEBUG: Thread stopped via stop event.
+2022-05-31 13:24:51,621 | pupil_recording_interface.stream | DEBUG: Thread stopped via stop event.
+2022-05-31 13:24:51,622 | pupil_recording_interface.stream | DEBUG: Thread stopped via stop event.
+2022-05-31 13:24:51,638 | pupil_recording_interface.stream | DEBUG: Thread stopped via stop event.
+2022-05-31 13:24:51,641 | pupil_recording_interface.stream | DEBUG: Stopped stream: accel
+2022-05-31 13:24:51,612 | pupil_recording_interface.stream | DEBUG: Thread stopped via stop event.
+2022-05-31 13:24:51,659 | pupil_recording_interface.stream | DEBUG: Stopped stream: odometry
+2022-05-31 13:24:51,662 | pupil_recording_interface.stream | DEBUG: Stopped stream: gyro
+2022-05-31 13:24:54,622 | pupil_recording_interface.encoder | DEBUG: Stopped writing frames to /home/bcvl/recordings/2022_05_31_13_09_01/world.mp4
+2022-05-31 13:24:54,610 | pupil_recording_interface.encoder | DEBUG: Stopped writing frames to /home/bcvl/recordings/2022_05_31_13_09_01/eye0.mp4
+2022-05-31 13:24:54,618 | pupil_recording_interface.encoder | DEBUG: Stopped writing frames to /home/bcvl/recordings/2022_05_31_13_09_01/eye1.mp4
+2022-05-31 13:24:54,638 | pupil_recording_interface.encoder | DEBUG: Stopped writing frames to /home/bcvl/recordings/2022_05_31_13_09_01/t265.mp4
+2022-05-31 13:24:54,679 | pupil_recording_interface.stream | DEBUG: Stopped stream: t265
+2022-05-31 13:24:54,710 | pupil_recording_interface.device.flir | DEBUG: Stopped FLIR camera
+2022-05-31 13:24:54,710 | pupil_recording_interface.stream | DEBUG: Stopped stream: world
+2022-05-31 13:24:54,748 | pupil_recording_interface.manager | DEBUG: Stopping process: eye0
+2022-05-31 13:24:54,689 | uvc | DEBUG: Stream stopped
+2022-05-31 13:24:54,766 | uvc | DEBUG: Stream closed
+2022-05-31 13:24:54,690 | uvc | DEBUG: Stream stopped
+2022-05-31 13:24:54,766 | uvc | DEBUG: Stream stop.
+2022-05-31 13:24:54,766 | uvc | DEBUG: Stream closed
+2022-05-31 13:24:54,766 | uvc | DEBUG: Stream stop.
+2022-05-31 13:24:54,821 | uvc | DEBUG: UVC device closed.
+2022-05-31 13:24:54,821 | pupil_recording_interface.stream | DEBUG: Stopped stream: eye1
+2022-05-31 13:24:54,826 | uvc | DEBUG: UVC device closed.
+2022-05-31 13:24:54,826 | pupil_recording_interface.stream | DEBUG: Stopped stream: eye0
+2022-05-31 13:24:54,848 | pupil_recording_interface.manager | DEBUG: Stopping process: eye1
+2022-05-31 13:24:54,848 | pupil_recording_interface.manager | DEBUG: Stopping process: t265
+2022-05-31 13:24:54,848 | pupil_recording_interface.manager | DEBUG: Stopping process: odometry
+2022-05-31 13:24:54,849 | pupil_recording_interface.manager | DEBUG: Stopping process: accel
+2022-05-31 13:24:54,849 | pupil_recording_interface.manager | DEBUG: Stopping process: gyro
+2022-05-31 13:24:54,855 | pupil_recording_interface.device.realsense | DEBUG: Stopping T265 pipeline for device: 948422111096
+2022-05-31 13:24:55,354 | pupil_recording_interface.device.realsense | DEBUG: Pipeline stopped
+2022-05-31 13:24:55,355 | pupil_recording_interface.manager | DEBUG: Stopped streams after 950.18 seconds

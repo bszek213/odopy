@@ -10,6 +10,6 @@ dependencies:
   - pandas
   - xarray
   - pupil_recording_interface
-  - rigid_body_motion
+  - rigid-body-motion
   - vedb_store
   - plotly

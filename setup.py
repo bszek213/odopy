@@ -21,5 +21,6 @@ setup(
    "vedb-store >= 0.0.1",
    "plotly >= 5.6.0",
    "pandas >= 1.4.1",
+   "matplotlib==3.5.2"
    ],
 )

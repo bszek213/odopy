@@ -14,12 +14,18 @@ import rigid_body_motion as rbm
 import vedb_store
 import os
 from scipy.signal import savgol_filter
-from scipy.signal import find_peaks
 # import file_io
 from datetime import datetime
 import plotly.graph_objects as go
-from time import sleep
 
+# def show(fig):
+#     import io
+#     import plotly.io as pio
+#     from PIL import Image
+#     buf = io.BytesIO()
+#     pio.write_image(fig, buf)
+#     img = Image.open(buf)
+#     img.show() 
 #methods should be written from longest to shortest in length
 class vedbCalibration():
 
@@ -29,33 +35,32 @@ class vedbCalibration():
         self.accel = None
         self.fps = 200 
     
-    def set_odometry_folder(self, folder):
+    def set_odometry_local(self, folder):
         isdir = os.path.isdir(folder) 
         if isdir == False:
             print('Folder does not exist. Check the path')
         elif isdir == True:
-            self.odometry = pri.load_dataset(folder,
-                                             odometry='recording',
-                                             cache=False)
-            self.accel = pri.load_dataset(folder,
-                                          accel="recording", 
-                                          cache=False)
+            # accel_local = os.path.join(folder, 'accel.pldata')
+            # odo_local = os.path.join(folder, 'odometry.pldata')
+            self.odometry = pri.load_dataset(folder,odometry='recording',cache=False)
+            self.accel = pri.load_dataset(folder,accel='recording',cache=False)
             
     def set_odometry_cloud(self, date_lookup):
-        dbi = vedb_store.docdb.getclient()
-        sessions = dbi.query('+date', type="Session")
-        # print(sessions.sort(key=myFunc))
-        for i in range(len(sessions)):
-            temp_date = sessions[i]['date']
-            if temp_date == date_lookup:
-                temp_path = sessions[i].paths["odometry"][1]
-                temp_path = '/'.join(temp_path.split('/')[0:-1])
-                self.odometry = pri.load_dataset(temp_path,
-                                                 odometry='recording',
-                                                 cache=False)
-                self.accel = pri.load_dataset(temp_path,
-                                              accel="recording", 
-                                              cache=False)
+        pass
+        # dbi = vedb_store.docdb.getclient()
+        # sessions = dbi.query('+date', type="Session")
+        # # print(sessions.sort(key=myFunc))
+        # for i in range(len(sessions)):
+        #     temp_date = sessions[i]['date']
+        #     if temp_date == date_lookup:
+        #         temp_path = sessions[i].paths["odometry"][1]
+        #         temp_path = '/'.join(temp_path.split('/')[0:-1])
+        #         self.odometry = pri.load_dataset(temp_path,
+        #                                          odometry='recording',
+        #                                          cache=False)
+        #         self.accel = pri.load_dataset(temp_path,
+        #                                       accel="recording", 
+        #                                       cache=False)
 
     def set_calibration(self):
         sine_wave_samps = np.linspace(0, 
@@ -84,9 +89,10 @@ class vedbCalibration():
         fig.update_layout(
             title="Angular velocity odometry",
             xaxis_title="Time stamps (datetime)",
-            yaxis_title="Angular Velocity (degrees/second)",
+            yaxis_title="Angular Velocity (radians/second)",
             )
         fig.show()
+        # show(fig)
         
         pitch_start = input('Pitch Timestamp Start (HH:mm:ss format): ')
         pitch_end = input('Pitch Timestamp End (HH:mm:ss format): ')
@@ -213,8 +219,6 @@ class vedbCalibration():
 
         record_time = slice(str(self.odometry.orientation.time[0].values), str(self.odometry.orientation.time[-1].values)) #Just selecting entire recording for now, but need it as a slice object
 
-        print(self.odometry)
-
         # Express data in calibrated frame (probably can use iteration to make this cleaner)
         self.calib_ang_pos = rbm.transform_quaternions(self.odometry.orientation.sel(time=record_time),
                                                        outof="t265_world",
@@ -242,12 +246,12 @@ class vedbCalibration():
                                                     outof="t265_world",
                                                     into="t265_calib")
 
-        print(self.calib_ang_pos)
-        print(self.calib_lin_pos)
-        print(self.calib_ang_vel)
-        print(self.calib_lin_vel)
-        print(self.calib_ang_acc)
-        print(self.calib_lin_acc)
+        # print(self.calib_ang_pos)
+        # print(self.calib_lin_pos)
+        # print(self.calib_ang_vel)
+        # print(self.calib_lin_vel)
+        # print(self.calib_ang_acc)
+        # print(self.calib_lin_acc)
 
         # Return data expressed in calibrated frame
 
@@ -259,6 +263,7 @@ class vedbCalibration():
             "ang_acc": self.calib_ang_acc,
             "lin_acc": self.calib_lin_acc}
             )
+        print(f'PRINT THE CALIBRATED FRAME: {self.calib_odo}')
     
     def calc_gait_variability(self):
         """
@@ -283,7 +288,6 @@ class vedbCalibration():
 
         head_roll = np.rad2deg(np.arctan(y/z))
         head_pitch = np.rad2deg(-np.arctan(x/norm))
-
         pass
 
     def calc_heading(self):
@@ -297,8 +301,16 @@ class vedbCalibration():
 
         pass
     
-    def plot(self, accel, odo):
-        pass
+    def plot(self):
+        fig, ax = plt.subplots()
+        ax.plot(self.odometry.time.values,self.odometry.angular_velocity[:, 0],label='uncalibrated pitch velocity')
+        ax.plot(self.odometry.time.values,self.odometry.angular_velocity[:, 1],label='uncalibrated yaw velocity')
+        ax.plot(self.odometry.time.values,self.calib_odo.ang_vel[:, 0],label='calibrated pitch velocity')
+        ax.plot(self.odometry.time.values,self.calib_odo.ang_vel[:, 1],label='calibrated yaw velocity')
+        plt.legend()
+        plt.ylabel('Angular velocity (rad/s)')
+        plt.xlabel('Time')
+        plt.show()
 
     def get_head_orientation(self):
         return self.head_roll, self.head_pitch

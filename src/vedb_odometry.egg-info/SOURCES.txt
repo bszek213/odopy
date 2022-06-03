@@ -11,4 +11,4 @@ src/vedb_odometry.egg-info/dependency_links.txt
 src/vedb_odometry.egg-info/requires.txt
 src/vedb_odometry.egg-info/top_level.txt
 src/vedb_odometry/test/__init__.py
-src/vedb_odometry/test/test_folder_cloud.py
+src/vedb_odometry/test/test_odo.py

@@ -7,15 +7,21 @@ Author: Brian Szekely and Christian Sinnott
 Author-email: bszekely@nevada.unr.edu
 License: LICENSE.txt
 Project-URL: Bug Tracker, https://github.com/vedb/vedb-odometry/issues
-Platform: UNKNOWN
 Classifier: Programming Language :: Python :: 3
 Classifier: License :: OSI Approved :: MIT License
 Classifier: Operating System :: OS Independent
-Requires-Python: >=3.7
+Requires-Python: >3.7
 Description-Content-Type: text/markdown
 License-File: LICENSE
 
-# vedb-odometry
+# VEDB-Odometry
+
 Odometry (T265) analysis and visualization for Visual Experience Database
 
+## Installation
+The [pip](https://pip.pypa.io/en/stable/) package manager can be used to install VEDB-Odometry.
 
+```bash
+pip install -e {cwd where the odometry package is}/odometry
+```
+This can be done in a conda environment
