@@ -136,21 +136,30 @@ class vedbCalibration():
         #             }
         # Extract calibration segment times:
         # Set-up Reference Frames
-        R_WORLD_ODOM = np.array([[0, 0, -1], [-1, 0, 0], [0, 1, 0]])
-        R_IMU_ODOM = np.array([[-1, 0, 0], [0, 1, 0], [0, 0, -1]])
+        R_WORLD_ODOM = np.array([[0, 0, -1], 
+                                  [-1, 0, 0], 
+                                  [0, 1, 0]])
+        R_IMU_ODOM = np.array([[-1, 0, 0], 
+                                [0, 1, 0], 
+                                [0, 0, -1]])
 
         rbm.register_frame("world", update=True)
 
         rbm.ReferenceFrame.from_rotation_matrix(R_WORLD_ODOM, name="t265_world", parent="world").register(update=True)
 
-        rbm.register_frame(
-            "t265_odom",
-            translation=self.odometry.position.values,
-            rotation=self.odometry.orientation.values,
-            timestamps=self.odometry.time.values,
-            parent="t265_world",
-            update=True,
-        )
+        # rbm.register_frame(
+        #     "t265_odom",
+        #     translation=self.odometry.position.values,
+        #     rotation=self.odometry.orientation.values,
+        #     timestamps=self.odometry.time.values,
+        #     parent="t265_world",
+        #     update=True,
+        # )
+        
+        rbm.ReferenceFrame.from_dataset(self.odometry, translation = "position",
+                                        rotation = "orientation", timestamps = "time",
+                                        parent = "t265_world", name = "t265_odom").register(update = True)
+        
         rbm.ReferenceFrame.from_rotation_matrix(R_IMU_ODOM, name="t265_imu", parent="t265_odom").register(update=True)
         rbm.ReferenceFrame.from_rotation_matrix(R_WORLD_ODOM, name="t265_vestibular", parent="t265_odom", inverse=True
                                                 ).register(update=True)
@@ -305,8 +314,8 @@ class vedbCalibration():
         fig, ax = plt.subplots()
         ax.plot(self.odometry.time.values,self.odometry.angular_velocity[:, 0],label='uncalibrated pitch velocity')
         ax.plot(self.odometry.time.values,self.odometry.angular_velocity[:, 1],label='uncalibrated yaw velocity')
-        ax.plot(self.odometry.time.values,self.calib_odo.ang_vel[:, 0],label='calibrated pitch velocity')
-        ax.plot(self.odometry.time.values,self.calib_odo.ang_vel[:, 1],label='calibrated yaw velocity')
+        ax.plot(self.odometry.time.values,self.calib_odo.ang_vel[:, 1],label='calibrated pitch velocity')
+        ax.plot(self.odometry.time.values,self.calib_odo.ang_vel[:, 2],label='calibrated yaw velocity')
         plt.legend()
         plt.ylabel('Angular velocity (rad/s)')
         plt.xlabel('Time')
