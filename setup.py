@@ -14,11 +14,11 @@ setup(
    long_description=open('README.md').read(),
    install_requires=[
    "numpy >= 1.22.2",
-   "rigid-body-motion >= 0.9.1",
-   "pupil_recording_interface >= 0.5.0",
+   #"rigid-body-motion >= 0.9.1",# Not pip installable, must be installed from conda or git
+   #"pupil_recording_interface >= 0.5.0", # Not pip installable, must be installed from conda or git
    "xarray >= 0.21.1",
    "scipy >= 1.8.0",
-   "vedb-store >= 0.0.1",
+   #"vedb-store >= 0.0.1", # Not pip installable, must be installed from git
    "plotly >= 5.6.0",
    "pandas >= 1.4.1",
    "matplotlib==3.5.2"

@@ -11,5 +11,5 @@ dependencies:
   - xarray
   - pupil_recording_interface
   - rigid-body-motion
-  - vedb_store
+  #- vedb_store # not installable via conda, must be done from git
   - plotly
