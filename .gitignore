@@ -3,9 +3,9 @@ __pycache__/
 
 #packaging
 .Python
-build/
+#build/
 develop-eggs/
-dist/
+#dist/
 downloads/
 eggs/
 .eggs/
