@@ -11,22 +11,13 @@ import xarray as xr
 import matplotlib.pyplot as plt
 import pupil_recording_interface as pri
 import rigid_body_motion as rbm
-import vedb_store
+# import vedb_store
 import os
+import yaml
 from scipy.signal import savgol_filter
-# import file_io
 from datetime import datetime
 import plotly.graph_objects as go
 
-# def show(fig):
-#     import io
-#     import plotly.io as pio
-#     from PIL import Image
-#     buf = io.BytesIO()
-#     pio.write_image(fig, buf)
-#     img = Image.open(buf)
-#     img.show() 
-#methods should be written from longest to shortest in length
 class vedbCalibration():
 
     def __init__(self, name=None):
@@ -40,6 +31,7 @@ class vedbCalibration():
         if isdir == False:
             print('Folder does not exist. Check the path')
         elif isdir == True:
+            self.folder = folder
             # accel_local = os.path.join(folder, 'accel.pldata')
             # odo_local = os.path.join(folder, 'odometry.pldata')
             self.odometry = pri.load_dataset(folder,odometry='recording',cache=False)
@@ -71,42 +63,53 @@ class vedbCalibration():
         plt.show()
         
     def start_end_plot(self):
-        #smooth data for better viewing purposes
-        pitch_vel = savgol_filter(self.odometry.angular_velocity[:, 0], 201, 2)
-        yaw_vel = savgol_filter(self.odometry.angular_velocity[:, 1], 201, 2)
-        
-        fig = go.Figure()
-        fig.add_trace(go.Scatter(
-            x=self.odometry.time.values,
-            y=pitch_vel,
-            name="pitch"       # this sets its legend entry
-            ))
-        fig.add_trace(go.Scatter(
-            x=self.odometry.time.values,
-            y=yaw_vel,
-            name="yaw"       # this sets its legend entry
-            ))
-        fig.update_layout(
-            title="Angular velocity odometry",
-            xaxis_title="Time stamps (datetime)",
-            yaxis_title="Angular Velocity (radians/second)",
-            )
-        fig.show()
-        # show(fig)
-        
-        pitch_start = input('Pitch Timestamp Start (HH:mm:ss format): ')
-        pitch_end = input('Pitch Timestamp End (HH:mm:ss format): ')
-        yaw_start = input('Yaw Timestamp Start (HH:mm:ss format): ')
-        yaw_end = input('Yaw Timestamp End (HH:mm:ss format): ')
-        df_time = pd.Series(self.odometry.time[0].values)
-        self.pitch_start = datetime.combine(df_time.dt.date.values[0],
-                                     datetime.strptime(pitch_start, '%H:%M:%S').time())
-        self.pitch_end = datetime.combine(df_time.dt.date.values[0],
-                                     datetime.strptime(pitch_end, '%H:%M:%S').time())
-        self.yaw_start = datetime.combine(df_time.dt.date.values[0],
-                                     datetime.strptime(yaw_start, '%H:%M:%S').time())
-        self.yaw_end = datetime.combine(df_time.dt.date.values[0],
-                                     datetime.strptime(yaw_end, '%H:%M:%S').time())
+        path_odo = os.path.join(self.folder, 'odo_times.yaml')
+        path_exists = os.path.exists(path_odo)
+        if path_exists == True:
+            print('Found odo_times.yaml.')
+            with open(path_odo) as file:
+                time_list = yaml.load(file, Loader=yaml.FullLoader)
+            self.pitch_start = time_list[0]['calibration']['pitch_start']
+            self.pitch_end = time_list[0]['calibration']['pitch_end']
+            self.yaw_start = time_list[0]['calibration']['yaw_start']
+            self.yaw_end = time_list[0]['calibration']['yaw_end']
+        else:
+            #smooth data for better viewing purposes
+            pitch_vel = savgol_filter(self.odometry.angular_velocity[:, 0], 201, 2)
+            yaw_vel = savgol_filter(self.odometry.angular_velocity[:, 1], 201, 2)
+            
+            fig = go.Figure()
+            fig.add_trace(go.Scatter(
+                x=self.odometry.time.values,
+                y=pitch_vel,
+                name="pitch"       # this sets its legend entry
+                ))
+            fig.add_trace(go.Scatter(
+                x=self.odometry.time.values,
+                y=yaw_vel,
+                name="yaw"       # this sets its legend entry
+                ))
+            fig.update_layout(
+                title="Angular velocity odometry",
+                xaxis_title="Time stamps (datetime)",
+                yaxis_title="Angular Velocity (radians/second)",
+                )
+            fig.show()
+            # show(fig)
+            
+            pitch_start = input('Pitch Timestamp Start (HH:mm:ss format): ')
+            pitch_end = input('Pitch Timestamp End (HH:mm:ss format): ')
+            yaw_start = input('Yaw Timestamp Start (HH:mm:ss format): ')
+            yaw_end = input('Yaw Timestamp End (HH:mm:ss format): ')
+            df_time = pd.Series(self.odometry.time[0].values)
+            self.pitch_start = datetime.combine(df_time.dt.date.values[0],
+                                         datetime.strptime(pitch_start, '%H:%M:%S').time())
+            self.pitch_end = datetime.combine(df_time.dt.date.values[0],
+                                         datetime.strptime(pitch_end, '%H:%M:%S').time())
+            self.yaw_start = datetime.combine(df_time.dt.date.values[0],
+                                         datetime.strptime(yaw_start, '%H:%M:%S').time())
+            self.yaw_end = datetime.combine(df_time.dt.date.values[0],
+                                         datetime.strptime(yaw_end, '%H:%M:%S').time())
         self.times = {'calibration':
             {'pitch_start': self.pitch_start,
              'pitch_end': self.pitch_end,
