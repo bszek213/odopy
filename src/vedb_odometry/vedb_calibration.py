@@ -275,7 +275,7 @@ class vedbCalibration():
             "ang_acc": self.calib_ang_acc,
             "lin_acc": self.calib_lin_acc}
             )
-        print(f'PRINT THE CALIBRATED FRAME: {self.calib_odo}')
+        print('odometry data are now calibrated')
     
     def calc_gait_variability(self):
         """
@@ -310,7 +310,6 @@ class vedbCalibration():
 
         heading_azimuth = np.rad2deg(-np.arctan2(y, x))
         heading_elevation = np.rad2deg(np.arcsin(z/norm))
-
         pass
     
     def plot(self):
@@ -325,7 +324,7 @@ class vedbCalibration():
         plt.show()
 
     def get_head_orientation(self):
-        return self.head_roll, self.head_pitch
+        return self.head_roll, self.head_pitch, self.head_yaw
 
     def get_heading(self):
         return self.heading_azimuth, self.heading_elevation
