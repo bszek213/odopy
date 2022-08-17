@@ -11,7 +11,7 @@ import xarray as xr
 import matplotlib.pyplot as plt
 import pupil_recording_interface as pri
 import rigid_body_motion as rbm
-# import vedb_store
+import vedb_store
 import os
 import yaml
 from scipy.signal import savgol_filter
@@ -19,7 +19,6 @@ from datetime import datetime
 import plotly.graph_objects as go
 
 class vedbCalibration():
-
     def __init__(self, name=None):
         self.name = name 
         self.odometry = None
@@ -258,15 +257,7 @@ class vedbCalibration():
                                                     outof="t265_world",
                                                     into="t265_calib")
 
-        # print(self.calib_ang_pos)
-        # print(self.calib_lin_pos)
-        # print(self.calib_ang_vel)
-        # print(self.calib_lin_vel)
-        # print(self.calib_ang_acc)
-        # print(self.calib_lin_acc)
-
         # Return data expressed in calibrated frame
-
         self.calib_odo = xr.Dataset(
             {"ang_pos": self.calib_ang_pos, 
             "lin_pos": self.calib_lin_pos,
@@ -324,7 +315,7 @@ class vedbCalibration():
         plt.show()
 
     def get_head_orientation(self):
-        return self.head_roll, self.head_pitch, self.head_yaw
+        return self.head_roll, self.head_pitch, #self.head_yaw
 
     def get_heading(self):
         return self.heading_azimuth, self.heading_elevation
@@ -334,6 +325,9 @@ class vedbCalibration():
     
     def get_odometry(self):
         return self.odometry
+    
+    def get_calibrated_odo(self):
+        return self.calib_odo
     
         
     

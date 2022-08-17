@@ -4,7 +4,7 @@
 Test for vedb odo from folder and from cloud
 @author: brianszekely
 """
-import sys
+# import sys
 from os import getcwd, path
 from vedb_odometry import vedb_calibration
 if __name__ == "__main__":
@@ -15,4 +15,5 @@ if __name__ == "__main__":
     # odo.set_odometry_cloud('2021_05_21_13_56_00')
     odo.start_end_plot()
     odo.t265_to_head_trans()
+    print(odo.get_calibrated_odo())
     odo.plot()
