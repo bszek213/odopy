@@ -1,0 +1,12 @@
+{
+    "duration_s": 946.4368598461151,
+    "meta_version": "2.1",
+    "min_player_version": "1.16",
+    "recording_name": "/home/bcvl/recordings/2022_05_31_13_09_01",
+    "recording_software_name": "ved-capture",
+    "recording_software_version": "0.5.0",
+    "recording_uuid": "6be095d8-0952-4f35-8362-54ee69c7a593",
+    "start_time_synced_s": 1056214.243659183,
+    "start_time_system_s": 1654016945.171377,
+    "system_info": "User: bcvl, Platform: Linux, Machine: BCVL-record3, Release: 5.13.0-41-generic, Version: #46~20.04.1-Ubuntu SMP Wed Apr 20 13:16:21 UTC 2022"
+}

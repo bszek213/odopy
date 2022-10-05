@@ -1,0 +1,14 @@
+LICENSE
+README.md
+pyproject.toml
+setup.cfg
+setup.py
+src/vedb_odometry/__init__.py
+src/vedb_odometry/vedb_calibration.py
+src/vedb_odometry.egg-info/PKG-INFO
+src/vedb_odometry.egg-info/SOURCES.txt
+src/vedb_odometry.egg-info/dependency_links.txt
+src/vedb_odometry.egg-info/requires.txt
+src/vedb_odometry.egg-info/top_level.txt
+src/vedb_odometry/test/__init__.py
+src/vedb_odometry/test/test_odo.py

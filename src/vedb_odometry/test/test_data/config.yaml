@@ -1,0 +1,276 @@
+streams:
+  video:
+    eye0:
+      controls:
+        Backlight Compensation: 1
+        Brightness: 0
+        Contrast: 65
+        Gain: 0
+        Hue: 0
+        Saturation: 0
+        Sharpness: 3
+        Gamma: 180
+        White Balance temperature: 4600
+      device_type: uvc
+      device_uid: Pupil Cam2 ID0
+      resolution: (400, 400)
+      fps: 120
+      color_format: gray
+      exposure_mode: auto
+    eye1:
+      controls:
+        Backlight Compensation: 1
+        Brightness: 0
+        Contrast: 65
+        Gain: 0
+        Hue: 0
+        Saturation: 0
+        Sharpness: 3
+        Gamma: 180
+        White Balance temperature: 4600
+      device_type: uvc
+      device_uid: Pupil Cam2 ID1
+      resolution: (400, 400)
+      fps: 120
+      color_format: gray
+      exposure_mode: auto
+    world:
+      device_uid: '20142025'
+      device_type: flir
+      resolution: (2048, 1536)
+      fps: 30
+      color_format: bayer_rggb8
+      settings:
+        ExposureAuto: Continuous
+        GainAuto: Continuous
+    t265:
+      device_uid: '948422111096'
+      device_type: t265
+      resolution: (1696, 800)
+      fps: 30
+      color_format: gray
+  motion:
+    odometry:
+      device_uid: '948422111096'
+      device_type: t265
+      motion_type: odometry
+    accel:
+      device_uid: '948422111096'
+      device_type: t265
+      motion_type: accel
+    gyro:
+      device_uid: '948422111096'
+      device_type: t265
+      motion_type: gyro
+  override: no
+version: 2.0.0
+commands:
+  record:
+    metadata:
+      study_site: Bates
+      experimenter_id:
+      experiment:
+      lighting:
+      scene:
+      instruction:
+      subject_id:
+      age:
+      gender:
+      height:
+      ethnicity:
+      IPD:
+      tilt_angle:
+    folder: ~/recordings/{today:%Y_%m_%d_%H_%M_%S}
+    policy: here
+    duration:
+    video:
+      world:
+        codec: libx264
+        encoder_kwargs:
+          crf: '18'
+          preset: ultrafast
+      eye0:
+        codec: libx264
+        encoder_kwargs:
+          crf: '18'
+          preset: ultrafast
+      eye1:
+        codec: libx264
+        encoder_kwargs:
+          crf: '18'
+          preset: ultrafast
+      t265:
+        codec: libx264
+        encoder_kwargs:
+          crf: '18'
+          preset: ultrafast
+    motion:
+      odometry:
+      accel:
+      gyro:
+    show_video: no
+    profile_selector: lighting
+    intrinsics:
+    - world
+    extrinsics:
+    - world
+    - t265
+  override: no
+  calibrate:
+    folder: ~/pupil_capture_settings
+    world: world
+    eye0: eye0
+    eye1: eye1
+  validate:
+    folder: ~/validations/{today:%Y_%m_%d_%H_%M_%S}
+    policy: here
+    world: world
+    eye0: eye0
+    eye1: eye1
+    settings:
+      world:
+        circle_detector:
+          scale: 0.5
+          paused: yes
+          detection_method: vedb
+          marker_size:
+          - 5
+          - 300
+          threshold_window_size: 13
+          min_area: 200
+          max_area: 4000
+          circularity: 0.8
+          convexity: 0.7
+          inertia: 0.4
+  estimate_cam_params:
+    folder: ~/pupil_capture_settings
+    settings:
+      t265:
+        circle_grid_detector:
+          stereo: yes
+          scale: 0.75
+      world:
+        circle_grid_detector:
+          scale: 0.5
+profiles:
+  override: no
+  outdoor1:
+    video:
+      eye0:
+        controls:
+          Backlight Compensation: 1
+          Brightness: 10
+          Contrast: 65
+          Gain: 0
+          Hue: 0
+          Saturation: 0
+          Sharpness: 3
+          Gamma: 120
+          White Balance temperature: 4600
+      eye1:
+        controls:
+          Backlight Compensation: 1
+          Brightness: 10
+          Contrast: 65
+          Gain: 0
+          Hue: 0
+          Saturation: 0
+          Sharpness: 3
+          Gamma: 120
+          White Balance temperature: 4600
+  outdoor2:
+    video:
+      eye0:
+        controls:
+          Backlight Compensation: 1
+          Brightness: 30
+          Contrast: 65
+          Gain: 0
+          Hue: 0
+          Saturation: 0
+          Sharpness: 3
+          Gamma: 160
+          White Balance temperature: 4600
+      eye1:
+        controls:
+          Backlight Compensation: 1
+          Brightness: 30
+          Contrast: 65
+          Gain: 0
+          Hue: 0
+          Saturation: 0
+          Sharpness: 3
+          Gamma: 160
+          White Balance temperature: 4600
+  outdoor3:
+    video:
+      eye0:
+        controls:
+          Backlight Compensation: 1
+          Brightness: 40
+          Contrast: 65
+          Gain: 0
+          Hue: 0
+          Saturation: 0
+          Sharpness: 3
+          Gamma: 180
+          White Balance temperature: 4600
+      eye1:
+        controls:
+          Backlight Compensation: 1
+          Brightness: 40
+          Contrast: 65
+          Gain: 0
+          Hue: 0
+          Saturation: 0
+          Sharpness: 3
+          Gamma: 180
+          White Balance temperature: 4600
+  indoor:
+    video:
+      eye0:
+        controls:
+          Backlight Compensation: 1
+          Brightness: 0
+          Contrast: 65
+          Gain: 0
+          Hue: 0
+          Saturation: 0
+          Sharpness: 3
+          Gamma: 180
+          White Balance temperature: 4600
+      eye1:
+        controls:
+          Backlight Compensation: 1
+          Brightness: 0
+          Contrast: 65
+          Gain: 0
+          Hue: 0
+          Saturation: 0
+          Sharpness: 3
+          Gamma: 180
+          White Balance temperature: 4600
+  outdoor:
+    video:
+      eye0:
+        controls:
+          Backlight Compensation: 1
+          Brightness: -60
+          Contrast: 65
+          Gain: 0
+          Hue: 0
+          Saturation: 0
+          Sharpness: 3
+          Gamma: 100
+          White Balance temperature: 4600
+      eye1:
+        controls:
+          Backlight Compensation: 1
+          Brightness: -60
+          Contrast: 65
+          Gain: 0
+          Hue: 0
+          Saturation: 0
+          Sharpness: 3
+          Gamma: 100
+          White Balance temperature: 4600
