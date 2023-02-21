@@ -1,0 +1,18 @@
+name: odopy #WIP, likely will look close to/exactly the same as the environment.yaml for `vedb_store`.
+channels:
+  - conda-forge
+  - phausamann
+  - vedb
+  - plotly
+  - anaconda
+dependencies:
+  - python=3.8
+  - numpy
+  - pandas
+  - xarray
+  - scipy
+  - matplotlib
+  - pupil_recording_interface
+  - rigid-body-motion
+  - plotly
+  - pip

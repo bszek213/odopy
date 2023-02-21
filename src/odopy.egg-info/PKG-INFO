@@ -1,0 +1,31 @@
+Metadata-Version: 2.1
+Name: odopy
+Version: 0.1.0
+Summary: odometry package that handles the T265 data
+Home-page: https://github.com/bszek213/odopy
+Author: Brian Szekely and Christian Sinnott
+Author-email: bszekely@nevada.unr.edu
+License: LICENSE.txt
+Project-URL: Bug Tracker, https://github.com/bszek213/odopy/issues
+Platform: UNKNOWN
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >3.7
+Description-Content-Type: text/markdown
+License-File: LICENSE
+
+# odopy
+
+Odometry (T265) analysis
+
+## Installation
+The [pip](https://pip.pypa.io/en/stable/) package manager can be used to install odopy.
+
+```bash
+pip install -e {cwd where the odometry package is}/odometry
+```
+This can be done in a conda environment
+note: use pip 21.3.1, not version 22
+
+
