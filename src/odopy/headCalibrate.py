@@ -11,7 +11,6 @@ import xarray as xr
 import matplotlib.pyplot as plt
 import pupil_recording_interface as pri
 import rigid_body_motion as rbm
-import vedb_store
 import os
 import yaml
 from scipy.signal import savgol_filter
