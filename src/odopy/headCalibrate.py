@@ -114,7 +114,6 @@ class headCalibrate():
              }}
 
     def t265_to_head_trans(self):
-
         # Pull annotated calibration segment times from yaml (LEGACY FROM OLD ANALYSIS, NEEDS CHANGED)
         # with open(folder / subject / "meta.yaml") as f:
         #     times = yaml.safe_load(f.read())
@@ -286,7 +285,7 @@ class headCalibrate():
         z = self.accel.sel(cartesian_axis="z")
         norm = self.accel.reduce(np.linalg.norm, "cartesian_axis")
         self.head_roll = np.rad2deg(np.arctan(y/z))
-        self.head_pitch = np.rad2deg(-np.arctan(x/norm))
+        self.head_pitch = np.rad2deg(-np.arcsin(x/norm))
         self.head_yaw = np.rad2deg(-np.arctan2(y, x))
 
     def calc_heading(self):
