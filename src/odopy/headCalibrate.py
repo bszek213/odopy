@@ -283,10 +283,14 @@ class headCalibrate():
         x = self.accel.sel(cartesian_axis="x")
         y = self.accel.sel(cartesian_axis="y")
         z = self.accel.sel(cartesian_axis="z")
-        norm = self.accel.reduce(np.linalg.norm, "cartesian_axis")
-        self.head_roll = np.rad2deg(np.arctan(y/z))
-        self.head_pitch = np.rad2deg(-np.arcsin(x/norm))
-        self.head_yaw = np.rad2deg(-np.arctan2(y, x))
+        self.head_roll = np.rad2deg(np.arctan(y/x))
+        self.head_pitch = np.rad2deg(np.arctan(y/z))
+        self.head_yaw = np.rad2deg(np.arctan(z/x))
+        #ASSUMES SPHERICAL COORDINATES
+        # norm = self.accel.reduce(np.linalg.norm, "cartesian_axis")
+        # self.head_roll = np.rad2deg(np.arctan(y/z))
+        # self.head_pitch = np.rad2deg(-np.arcsin(x/norm))
+        # self.head_yaw = np.rad2deg(-np.arctan2(y, x))
 
     def calc_heading(self):
         x = self.accel.linear_vel.sel(cartesian_axis="x")
