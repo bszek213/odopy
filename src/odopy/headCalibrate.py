@@ -222,7 +222,7 @@ class headCalibrate():
         #                    name="t265_calib", parent="t265_vestibular", inverse=True, discrete=False, update=True)
 
         rbm.register_frame(rotation=rotations,
-                           name="t265_calib", parent="t265_vestibular", inverse=True, discrete=False, update=True)
+                           name="t265_calib", parent="t265_vestibular", inverse=False, discrete=False, update=True)
 
         record_time = slice(str(self.odometry.orientation.time[0].values), str(self.odometry.orientation.time[-1].values)) #Just selecting entire recording for now, but need it as a slice object
 
