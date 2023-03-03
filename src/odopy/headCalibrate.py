@@ -298,15 +298,42 @@ class headCalibrate():
         return heading_azimuth, heading_elevation
     
     def plot(self):
-        fig, ax = plt.subplots(figsize=(20,8))
-        ax.plot(self.odometry.time.values,self.odometry.angular_velocity[:, 0],label='uncalibrated pitch velocity')
-        ax.plot(self.odometry.time.values,self.odometry.angular_velocity[:, 1],label='uncalibrated yaw velocity')
-        ax.plot(self.odometry.time.values,self.calib_odo.ang_vel[:, 1],label='calibrated pitch velocity')
-        ax.plot(self.odometry.time.values,self.calib_odo.ang_vel[:, 2],label='calibrated yaw velocity')
-        plt.legend()
-        plt.ylabel('Angular velocity (rad/s)')
-        plt.xlabel('Time')
-        plt.show()
+        fig = go.Figure()
+        fig.add_trace(go.Scatter(
+            x=self.odometry.time.values,
+            y=self.odometry.angular_velocity[:, 0],
+            name="uncalibrated pitch velocity"       # this sets its legend entry
+            ))
+        fig.add_trace(go.Scatter(
+            x=self.odometry.time.values,
+            y=self.odometry.angular_velocity[:, 1],
+            name="uncalibrated yaw velocity"       # this sets its legend entry
+            ))
+        fig.add_trace(go.Scatter(
+            x=self.odometry.time.values,
+            y=self.calib_odo.ang_vel[:, 1],
+            name="calibrated pitch velocity"       # this sets its legend entry
+            ))
+        fig.add_trace(go.Scatter(
+            x=self.odometry.time.values,
+            y=self.calib_odo.ang_vel[:, 2],
+            name="calibrated yaw velocity"       # this sets its legend entry
+            ))
+        fig.update_layout(
+            title="Angular velocity odometry",
+            xaxis_title="Time stamps (datetime)",
+            yaxis_title="Angular Velocity (radians/second)",
+            )
+        fig.show()
+        # fig, ax = plt.subplots(figsize=(20,8))
+        # ax.plot(self.odometry.time.values,self.odometry.angular_velocity[:, 0],label='uncalibrated pitch velocity')
+        # ax.plot(self.odometry.time.values,self.odometry.angular_velocity[:, 1],label='uncalibrated yaw velocity')
+        # ax.plot(self.odometry.time.values,self.calib_odo.ang_vel[:, 1],label='calibrated pitch velocity')
+        # ax.plot(self.odometry.time.values,self.calib_odo.ang_vel[:, 2],label='calibrated yaw velocity')
+        # plt.legend()
+        # plt.ylabel('Angular velocity (rad/s)')
+        # plt.xlabel('Time')
+        # plt.show()
 
     def get_head_orientation(self):
         return self.head_roll.linear_acceleration, self.head_pitch.linear_acceleration, self.head_yaw.linear_acceleration
