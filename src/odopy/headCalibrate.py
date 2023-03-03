@@ -298,7 +298,7 @@ class headCalibrate():
         return heading_azimuth, heading_elevation
     
     def plot(self):
-        fig, ax = plt.subplots()
+        fig, ax = plt.subplots(figsize=(12,8))
         ax.plot(self.odometry.time.values,self.odometry.angular_velocity[:, 0],label='uncalibrated pitch velocity')
         ax.plot(self.odometry.time.values,self.odometry.angular_velocity[:, 1],label='uncalibrated yaw velocity')
         ax.plot(self.odometry.time.values,self.calib_odo.ang_vel[:, 1],label='calibrated pitch velocity')
