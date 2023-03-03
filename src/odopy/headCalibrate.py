@@ -106,6 +106,17 @@ class headCalibrate():
                                          datetime.strptime(yaw_start, '%H:%M:%S').time())
             self.yaw_end = datetime.combine(df_time.dt.date.values[0],
                                          datetime.strptime(yaw_end, '%H:%M:%S').time())
+        save_to_yaml = {'pitch_start': self.pitch_start,
+             'pitch_end': self.pitch_end,
+             'yaw_start': self.yaw_start,
+             'yaw_end': self.yaw_end
+             }
+        yaml_file = os.path.join(self.folder, 'odo_times.yaml')
+        if os.path.exists(yaml_file):
+            raise ValueError('File %s already exists! Please rename or remove it if you wish to overwrite.'%(str(yaml_file)))
+        else:
+            with open(yaml_file, mode='w') as fid:
+                yaml.dump(save_to_yaml, fid)
         self.times = {'calibration':
             {'pitch_start': self.pitch_start,
              'pitch_end': self.pitch_end,
