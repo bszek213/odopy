@@ -69,6 +69,12 @@ class headCalibrate():
             self.pitch_end = time_list[0]['calibration']['pitch_end']
             self.yaw_start = time_list[0]['calibration']['yaw_start']
             self.yaw_end = time_list[0]['calibration']['yaw_end']
+            self.times = {'calibration':
+            {'pitch_start': self.pitch_start,
+             'pitch_end': self.pitch_end,
+             'yaw_start': self.yaw_start,
+             'yaw_end': self.yaw_end
+             }}
         else:
             #smooth data for better viewing purposes
             pitch_vel = savgol_filter(self.odometry.angular_velocity[:, 0], 201, 2)
@@ -117,12 +123,12 @@ class headCalibrate():
             # else:
             with open(yaml_file, mode='w') as fid:
                 yaml.dump(save_to_yaml, fid)
-        self.times = {'calibration':
-            {'pitch_start': self.pitch_start,
-             'pitch_end': self.pitch_end,
-             'yaw_start': self.yaw_start,
-             'yaw_end': self.yaw_end
-             }}
+            self.times = {'calibration':
+                {'pitch_start': self.pitch_start,
+                'pitch_end': self.pitch_end,
+                'yaw_start': self.yaw_start,
+                'yaw_end': self.yaw_end
+                }}
 
     def t265_to_head_trans(self):
         # Pull annotated calibration segment times from yaml (LEGACY FROM OLD ANALYSIS, NEEDS CHANGED)
@@ -145,16 +151,20 @@ class headCalibrate():
         #             }
         # Extract calibration segment times:
         # Set-up Reference Frames
-        R_WORLD_ODOM = np.array([[0, 0, -1], 
-                                  [-1, 0, 0], 
+        R_WORLD_ODOM = np.array([[0, 0, 1], 
+                                  [1, 0, 0], 
                                   [0, 1, 0]])
+        # np.array([[0, 0, -1], 
+        #                           [-1, 0, 0], 
+        #                           [0, 1, 0]])
         R_IMU_ODOM = np.array([[-1, 0, 0], 
                                 [0, 1, 0], 
                                 [0, 0, -1]])
 
         rbm.register_frame("world", update=True)
 
-        rbm.ReferenceFrame.from_rotation_matrix(R_WORLD_ODOM, name="t265_world", parent="world").register(update=True)
+        rbm.ReferenceFrame.from_rotation_matrix(R_WORLD_ODOM, name="t265_world",
+                                                parent="world").register(update=True)
 
         # rbm.register_frame(
         #     "t265_odom",
@@ -167,10 +177,12 @@ class headCalibrate():
         
         rbm.ReferenceFrame.from_dataset(self.odometry, translation = "position",
                                         rotation = "orientation", timestamps = "time",
-                                        parent = "t265_world", name = "t265_odom").register(update = True)
+                                        parent = "t265_world", name = "t265_odom").register(update=True)
         
         rbm.ReferenceFrame.from_rotation_matrix(R_IMU_ODOM, name="t265_imu", parent="t265_odom").register(update=True)
-        rbm.ReferenceFrame.from_rotation_matrix(R_WORLD_ODOM, name="t265_vestibular", parent="t265_odom", inverse=True
+        rbm.ReferenceFrame.from_rotation_matrix(R_WORLD_ODOM, name="t265_vestibular", 
+                                                parent="t265_odom", 
+                                                inverse=True
                                                 ).register(update=True)
         print(rbm.render_tree("world"))
         # Define first calibrated frame using calibration segments identified in set_calibration method
@@ -233,7 +245,8 @@ class headCalibrate():
         #                    name="t265_calib", parent="t265_vestibular", inverse=True, discrete=False, update=True)
 
         rbm.register_frame(rotation=rotations,
-                           name="t265_calib", parent="t265_vestibular", inverse=False, discrete=False, update=True)
+                           name="t265_calib", parent="t265_vestibular",
+                             inverse=False, discrete=False, update=True)
 
         record_time = slice(str(self.odometry.orientation.time[0].values), str(self.odometry.orientation.time[-1].values)) #Just selecting entire recording for now, but need it as a slice object
 

@@ -7,7 +7,6 @@ Author: Brian Szekely and Christian Sinnott
 Author-email: bszekely@nevada.unr.edu
 License: LICENSE.txt
 Project-URL: Bug Tracker, https://github.com/bszek213/odopy/issues
-Platform: UNKNOWN
 Classifier: Programming Language :: Python :: 3
 Classifier: License :: OSI Approved :: MIT License
 Classifier: Operating System :: OS Independent
@@ -27,5 +26,3 @@ bash -i setup_odo_env.sh
 ```
 This can be done in a conda environment
 note: use pip 21.3.1, not version 22
-
-
