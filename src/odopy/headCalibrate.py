@@ -59,16 +59,15 @@ class headCalibrate():
         
     def start_end_plot(self):
         path_odo = os.path.join(self.folder, 'odo_times.yaml')
-        print(path_odo)
         path_exists = os.path.exists(path_odo)
         if path_exists == True:
             print('Found odo_times.yaml.')
             with open(path_odo) as file:
                 time_list = yaml.load(file, Loader=yaml.FullLoader)
-            self.pitch_start = time_list[0]['calibration']['pitch_start']
-            self.pitch_end = time_list[0]['calibration']['pitch_end']
-            self.yaw_start = time_list[0]['calibration']['yaw_start']
-            self.yaw_end = time_list[0]['calibration']['yaw_end']
+            self.pitch_start = time_list['pitch_start']
+            self.pitch_end = time_list['pitch_end']
+            self.yaw_start = time_list['yaw_start']
+            self.yaw_end = time_list['yaw_end']
             self.times = {'calibration':
             {'pitch_start': self.pitch_start,
              'pitch_end': self.pitch_end,
@@ -113,10 +112,10 @@ class headCalibrate():
             self.yaw_end = datetime.combine(df_time.dt.date.values[0],
                                          datetime.strptime(yaw_end, '%H:%M:%S').time())
             save_to_yaml = {'pitch_start': self.pitch_start,
-                'pitch_end': self.pitch_end,
-                'yaw_start': self.yaw_start,
-                'yaw_end': self.yaw_end
-                }
+                            'pitch_end': self.pitch_end,
+                            'yaw_start': self.yaw_start,
+                            'yaw_end': self.yaw_end
+                            }
             yaml_file = os.path.join(self.folder, 'odo_times.yaml')
             # if os.path.exists(yaml_file):
             #     raise ValueError('File %s already exists! Please rename or remove it if you wish to overwrite.'%(str(yaml_file)))
@@ -131,7 +130,7 @@ class headCalibrate():
                 }}
 
     def t265_to_head_trans(self):
-        # Pull annotated calibration segment times from yaml (LEGACY FROM OLD ANALYSIS, NEEDS CHANGED)
+        # Pull annotated calibration segment times from yaml (LEGACY Fself.timesROM OLD ANALYSIS, NEEDS CHANGED)
         # with open(folder / subject / "meta.yaml") as f:
         #     times = yaml.safe_load(f.read())
 
