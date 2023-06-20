@@ -66,10 +66,10 @@ class headCalibrate():
                 time_list = yaml.load(file, Loader=yaml.FullLoader)
             print(time_list[0])
             input()
-            self.pitch_start = time_list[0]['pitch_start']
-            self.pitch_end = time_list[0]['pitch_end']
-            self.yaw_start = time_list[0]['yaw_start']
-            self.yaw_end = time_list[0]['yaw_end']
+            self.pitch_start = time_list[0]['calibration']['pitch_start']
+            self.pitch_end = time_list[0]['calibration']['pitch_end']
+            self.yaw_start = time_list[0]['calibration']['yaw_start']
+            self.yaw_end = time_list[0]['calibration']['yaw_end']
             self.times = {'calibration':
             {'pitch_start': self.pitch_start,
              'pitch_end': self.pitch_end,
