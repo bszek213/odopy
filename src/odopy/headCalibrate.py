@@ -64,8 +64,6 @@ class headCalibrate():
             print('Found odo_times.yaml.')
             with open(path_odo) as file:
                 time_list = yaml.load(file, Loader=yaml.FullLoader)
-            print(time_list[0])
-            input()
             self.pitch_start = time_list[0]['calibration']['pitch_start']
             self.pitch_end = time_list[0]['calibration']['pitch_end']
             self.yaw_start = time_list[0]['calibration']['yaw_start']
