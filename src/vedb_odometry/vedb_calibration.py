@@ -224,7 +224,7 @@ class vedbCalibration():
         #                    # timestamps=xr.DataArray(argmin_time),
         #                    # timestamps=np.array([pd.to_datetime(argmin_time)]), #pd.to_datetime(argmin_time)
         #                    name="t265_calib", parent="t265_vestibular", inverse=True, discrete=False, update=True)
-
+        self.quat_to_rot_mat(rotations)
         rbm.register_frame(rotation=rotations,
                            name="t265_calib", parent="t265_vestibular", inverse=True, discrete=False, update=True)
 
@@ -268,6 +268,29 @@ class vedbCalibration():
             )
         print('odometry data are now calibrated')
     
+    def quat_to_rot_mat(self,quaternion):
+        """
+        Parameters: 
+        -array([-9.99428637e-01, -1.27234994e-02,  3.98607922e-04,  3.13105822e-02]) : Coordinates:'w' 'x' 'y' 'z'
+
+        Returns:
+        - numpy.ndarray - 3x3 rotation matrix.
+        Output: [[ 9.98038977e-01  6.25752416e-02 -1.59352069e-03]
+                [-6.25955284e-02  9.97715520e-01 -2.54074980e-02]
+                [ 3.78386558e-16  2.54574206e-02  9.99675907e-01]]
+        
+        Equation:
+        R = | 1 - 2(q_y^2 + q_z^2)  2(q_x*q_y - q_w*q_z)  2(q_x*q_z + q_w*q_y) |
+            | 2(q_x*q_y + q_w*q_z)  1 - 2(q_x^2 + q_z^2)  2(q_y*q_z - q_w*q_x) |
+            | 2(q_x*q_z - q_w*q_y)  2(q_y*q_z + q_w*q_x)  1 - 2(q_x^2 + q_y^2) |
+        """
+        q_w, q_x, q_y, q_z = quaternion
+        self.rot_mat_sensor_to_head = np.array([
+            [1 - 2 * (q_y**2 + q_z**2), 2 * (q_x*q_y - q_w*q_z), 2 * (q_x*q_z + q_w*q_y)],
+            [2 * (q_x*q_y + q_w*q_z), 1 - 2 * (q_x**2 + q_z**2), 2 * (q_y*q_z - q_w*q_x)],
+            [2 * (q_x*q_z - q_w*q_y), 2 * (q_y*q_z + q_w*q_x), 1 - 2 * (q_x**2 + q_y**2)]
+        ])
+
     def calc_gait_variability(self):
         """
         this article is used as a reference for the gait variability metric:
@@ -329,6 +352,5 @@ class vedbCalibration():
     def get_calibrated_odo(self):
         return self.calib_odo
     
-        
-    
-
+    def get_rot_mat_t265_sensor_to_head(self):
+        return self.rot_mat_sensor_to_head

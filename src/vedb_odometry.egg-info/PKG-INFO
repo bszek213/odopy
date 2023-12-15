@@ -7,7 +7,6 @@ Author: Brian Szekely and Christian Sinnott
 Author-email: bszekely@nevada.unr.edu
 License: LICENSE.txt
 Project-URL: Bug Tracker, https://github.com/vedb/vedb-odometry/issues
-Platform: UNKNOWN
 Classifier: Programming Language :: Python :: 3
 Classifier: License :: OSI Approved :: MIT License
 Classifier: Operating System :: OS Independent
@@ -27,5 +26,3 @@ pip install -e {cwd where the odometry package is}/odometry
 ```
 This can be done in a conda environment
 note: use pip 21.3.1, not version 22
-
-

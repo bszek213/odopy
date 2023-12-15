@@ -16,4 +16,5 @@ if __name__ == "__main__":
     odo.start_end_plot()
     odo.t265_to_head_trans()
     print(odo.get_calibrated_odo())
+    print(f'rotation matrix from t265 sensor coordinates to head coordinates:\n{odo.rot_mat_sensor_to_head}')
     odo.plot()
