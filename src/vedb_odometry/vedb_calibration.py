@@ -68,10 +68,17 @@ class vedbCalibration():
             print('Found odo_times.yaml.')
             with open(path_odo) as file:
                 time_list = yaml.load(file, Loader=yaml.FullLoader)
-            self.pitch_start = time_list[0]['calibration']['pitch_start']
-            self.pitch_end = time_list[0]['calibration']['pitch_end']
-            self.yaw_start = time_list[0]['calibration']['yaw_start']
-            self.yaw_end = time_list[0]['calibration']['yaw_end']
+            try:
+                self.pitch_start = time_list[0]['calibration']['pitch_start']
+                self.pitch_end = time_list[0]['calibration']['pitch_end']
+                self.yaw_start = time_list[0]['calibration']['yaw_start']
+                self.yaw_end = time_list[0]['calibration']['yaw_end']
+            except:
+                print('wrong index. try without indexing [0]')
+                self.pitch_start = time_list['calibration']['pitch_start']
+                self.pitch_end = time_list['calibration']['pitch_end']
+                self.yaw_start = time_list['calibration']['yaw_start']
+                self.yaw_end = time_list['calibration']['yaw_end']
         else:
             #smooth data for better viewing purposes
             pitch_vel = savgol_filter(self.odometry.angular_velocity[:, 0], 201, 2)
