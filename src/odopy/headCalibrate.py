@@ -150,15 +150,15 @@ class headCalibrate():
         #             }
         # Extract calibration segment times:
         # Set-up Reference Frames
-        R_WORLD_ODOM = np.array([[0, 0, 1], 
-                                  [1, 0, 0], 
-                                  [0, 1, 0]])
+        R_WORLD_ODOM = np.array([[0, 0, -1], 
+                            [-1, 0, 0], 
+                            [0, 1, 0]])
         # np.array([[0, 0, -1], 
         #                           [-1, 0, 0], 
         #                           [0, 1, 0]])
         R_IMU_ODOM = np.array([[-1, 0, 0], 
-                                [0, 1, 0], 
-                                [0, 0, -1]])
+                            [0, 1, 0], 
+                            [0, 0, -1]])
 
         rbm.register_frame("world", update=True)
 
@@ -187,7 +187,7 @@ class headCalibrate():
         # Define first calibrated frame using calibration segments identified in set_calibration method
         # segments = [times["pre_calib"]] + [times["re_calib"]]
         segments = self.times["calibration"]
-        rotations = np.zeros([len(segments), 4]) #Original has 4 - yaw, pitch, Reid's, hallway
+        rotations = np.zeros([len(segments), 4]) #Original has 4 - yaw, pitch, Reid's
         timestamps = np.zeros(len(segments), dtype=pd.Timestamp)
         
         for idx, seg in self.times["calibration"].items():
@@ -292,8 +292,8 @@ class headCalibrate():
         this article is used as a reference for the gait variability metric:
         https://jneuroengrehab.biomedcentral.com/track/pdf/10.1186/1743-0003-2-19.pdf
         """
-        plt.plot(self.odometry.position[:,1])
-        plt.show()
+        # plt.plot(self.odometry.position[:,1])
+        # plt.show()
         # peaks_fast, _= find_peaks(fast[:,1],distance=fps / 3)
         # for i in range(len(peaks_slow) - 1):
         #     step_time_slo[i] = (peaks_slow[i+1] - peaks_slow[i]) * (1/fps)
