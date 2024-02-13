@@ -162,9 +162,9 @@ class headCalibrate():
         R_WORLD_ODOM = np.array([[0, 0, -1], 
                                 [-1, 0, 0], 
                                 [0, 1, 0]])
-        # R_IMU_ODOM = np.array([[-1, 0, 0], 
-        #                       [0, 1, 0], 
-        #                        [0, 0, -1]])
+        R_IMU_ODOM = np.array([[-1, 0, 0], 
+                              [0, 1, 0], 
+                               [0, 0, -1]])
         #new way
         # R_WORLD_ODOM = np.array([[0, -1, 0], 
         #                          [0, 0, 1], 
@@ -191,7 +191,7 @@ class headCalibrate():
                                         rotation = "orientation", timestamps = "time",
                                         parent = "t265_world", name = "t265_odom").register(update=True)
         
-        # rbm.ReferenceFrame.from_rotation_matrix(R_IMU_ODOM, name="t265_imu", parent="t265_odom").register(update=True)
+        rbm.ReferenceFrame.from_rotation_matrix(R_IMU_ODOM, name="t265_imu", parent="t265_odom").register(update=True)
         rbm.ReferenceFrame.from_rotation_matrix(R_WORLD_ODOM, name="t265_vestibular", 
                                                 parent="t265_odom", 
                                                 inverse=True
@@ -259,7 +259,7 @@ class headCalibrate():
 
         rbm.register_frame(rotation=rotations,
                             name="t265_calib", parent="t265_vestibular",
-                            inverse=False, discrete=False, update=True)
+                            inverse=True, discrete=False, update=True)
 
         record_time = slice(str(self.odometry.orientation.time[0].values), str(self.odometry.orientation.time[-1].values)) #Just selecting entire recording for now, but need it as a slice object
 
