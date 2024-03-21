@@ -28,14 +28,36 @@ def quat_to_euler(quaternions):
 
     return np.column_stack((roll, pitch, yaw))
 
+
+# def extract_unzip(file):
+#     zip_url = f"https://osf.io/pcxsj/download/{file}.zip"
+#     extract_dir = "/media/bszekely/BrianDrive"
+#     # Download the zip file
+#     wget -O - https://osf.io/pcxsj/download/2022_08_10_15_20_14.zip
+#     download_command = ["wget", "-P", extract_dir, zip_url]
+#     subprocess.run(download_command)
+#     zip_file = os.path.join(extract_dir, f"{file}.zip")
+#     extract_command = ["unzip", zip_file, "-d", extract_dir]
+#     subprocess.run(extract_command)
+#     input()
+
 if __name__ == "__main__":
     odo = headCalibrate.headCalibrate()
     curr_dir = getcwd()
     folder = path.join(curr_dir, 'test_data')
+    folder = '/media/bszekely/BrianDrive/brian_walk_test'
+    # folder = "/media/bszekely/BrianDrive/2022_02_09_13_40_13_test_walk_session"
+    # folder = '/home/bszekely/Desktop/projects/eye_pipeline/002_2022_12_12_10_56_40'
+    #vedb takes
+    # folder = "/media/bszekely/BrianDrive/2022_08_10_13_39_57" #VEDB WALKING TAKE
     odo.set_odometry_local(folder)
+    odo_data = odo.get_odometry()
+    # print(odo_data.orientation.values)
+    # np.save('orientation_values_walk.npy',odo_data.orientation.values)
     odo.start_end_plot()
     odo.t265_to_head_trans()
     odo.calc_head_orientation()
+    rbm_tree = odo.get_rbm()
     # head_roll, head_pitch, head_yaw = odo.get_head_orientation()
     # out = quat_to_euler(odo.get_odometry().orientation.values)
     # plt.plot(out,linewidth=3,marker='*')

@@ -1,0 +1,9 @@
+christian gravity: 9.92 m/s2, Mean X,Y,Z accel: [-0.13958993647303336,9.612519476465653,1.0485251484345655]
+christian transformation to world euler angle: [ x: 0, y: 6.6426134, z: 0 ]
+
+
+brian gravity: 10.04 m/s2, Mean X,Y,Z accel: [0.36621636644747785,9.640127633010673,0.6644681946140013]
+brian transformation to world euler angle: [ x: 0, y: -4.9419703, z: 0 ]
+
+lauren gravity: 9.89 m/s2, Mean X,Y,Z accel: [0.04392117337827124,9.72921964738923,0.7921395474078246]
+lauren transformation to world euler angle: [ x: 0, y: 12.5619751, z: 0 ]
