@@ -45,9 +45,9 @@ if __name__ == "__main__":
     odo = headCalibrate.headCalibrate()
     curr_dir = getcwd()
     folder = path.join(curr_dir, 'test_data')
-    folder = '/media/bszekely/BrianDrive/brian_walk_test'
+    # folder = '/media/bszekely/BrianDrive/brian_walk_test'
     # folder = "/media/bszekely/BrianDrive/2022_02_09_13_40_13_test_walk_session"
-    # folder = '/home/bszekely/Desktop/projects/eye_pipeline/002_2022_12_12_10_56_40'
+    folder = '/home/bszekely/Desktop/projects/eye_pipeline/002_2022_12_12_10_56_40'
     #vedb takes
     # folder = "/media/bszekely/BrianDrive/2022_08_10_13_39_57" #VEDB WALKING TAKE
     odo.set_odometry_local(folder)

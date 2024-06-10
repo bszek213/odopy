@@ -159,6 +159,7 @@ class headCalibrate():
             print(f'mean g over reids plane: {mean_g.values}')
         else:
             mean_g = self.accel.linear_acceleration.reduce(np.linalg.norm, "cartesian_axis").mean()
+
         g_world = xr.DataArray(
             [0, 0, mean_g],
             coords={"cartesian_axis": ["x", "y", "z"]},
@@ -190,27 +191,30 @@ class headCalibrate():
             gravity = rbm.transform_vectors(g_world, outof="world", into="world_coord")
         else:
             gravity = rbm.transform_vectors(g_world, outof="world", into="t265_calib")
-        norm = gravity.reduce(np.linalg.norm, "cartesian_axis")
 
-        #save head pitch and roll
+        #head in world
+        gravity = rbm.transform_vectors(g_world, outof="world", into="world_coord")
+        norm = gravity.reduce(np.linalg.norm, "cartesian_axis")
         self.head_roll = np.rad2deg(np.arctan(gravity[:,1]/gravity[:,2]))
         self.head_pitch = np.rad2deg(-np.arcsin(gravity[:,0]/norm))
 
-        # calib_lin_acc = rbm.transform_vectors(self.odometry.linear_velocity, #Could use accelerometer measurement here as well, to decide later
-        #                                             outof="t265_world",
-        #                                             into="world_coord")
-        
-        # plt.plot(self.odometry.time.values, gravity[:, 0], color='red', label='x', linewidth=3,alpha=0.7)
-        # plt.plot(gravity[:,1], gravity[:, 0], color='blue', label='y', linewidth=3, alpha=0.7)
-        # plt.plot(self.odometry.time.values, gravity[:, 1], color='blue', label='y', linewidth=3, alpha=0.7)
-        # plt.plot(self.odometry.time.values, gravity[:, 2], color='green', label='z', linewidth=3, alpha=0.7)
-        # plt.title('linear accel in world... supposedly')
-
-        # plt.scatter(head_roll, head_pitch, color='blue',s=1,alpha=0.5)
-        # plt.ylabel('Pitch wrt to gravity (degrees)')
-        # plt.xlabel('Roll wrt to gravity (degrees)')
-        # # plt.legend()
-        # plt.show()
+        plt.figure(figsize=(10,8))
+        plt.plot(self.head_roll, self.head_pitch, color='blue', markersize=1, alpha=0.4, label='Gravity Alignment')
+        #head in kinematic
+        gravity = rbm.transform_vectors(g_world, outof="world", into="t265_calib")
+        norm = gravity.reduce(np.linalg.norm, "cartesian_axis")
+        head_roll = np.rad2deg(np.arctan(gravity[:,1]/gravity[:,2]))
+        head_pitch = np.rad2deg(-np.arcsin(gravity[:,0]/norm))
+        plt.plot(head_roll, head_pitch, color='red', markersize=1, alpha=0.4, label='Kinematic Coordinate Frame')
+        gravity_center = np.mean(self.head_roll), np.mean(self.head_pitch)
+        plt.scatter(gravity_center[0], gravity_center[1], color='blue', marker='o', s=100, label='Gravity Centroid')
+        head_center = np.mean(head_roll), np.mean(head_pitch)
+        plt.scatter(head_center[0], head_center[1], color='red', marker='o', s=100, label='Kinematic Centroid')
+        plt.ylabel('Pitch (degrees)')
+        plt.xlabel('Roll (degrees)')
+        plt.legend()
+        plt.savefig('kin_to_gravity.png',dpi=450)
+        plt.close()
         
 
     def t265_to_head_trans(self):
